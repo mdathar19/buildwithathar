@@ -7,6 +7,7 @@ import Hero from "./components/Hero";
 import Manifest from "./components/Manifest";
 import CapMatrix from "./components/CapMatrix";
 import OpsLog from "./components/OpsLog";
+import FounderBuild from "./components/FounderBuild";
 import SysGrid from "./components/SysGrid";
 import Transmit from "./components/Transmit";
 
@@ -22,6 +23,7 @@ export default function Page() {
         <Manifest />
         <CapMatrix />
         <OpsLog />
+        <FounderBuild />
         <SysGrid />
         <Transmit />
       </main>

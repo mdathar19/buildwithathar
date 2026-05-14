@@ -367,6 +367,60 @@ export const caseStudies: Record<string, CaseStudy> = {
     outcome:
       "Replaced manual Excel month-close. Leadership reshapes P&L definitions through a UI, not through someone's head. Real-time recomputation means the report is always current — no stale exports.",
   },
+
+  "deal-on-property": {
+    slug: "deal-on-property",
+    title: "Deal On Property — Founder Build",
+    subtitle: "A production real estate marketplace targeting the Indian market — Next.js 16 / React 19, server-first architecture, deep SEO surface, geo-aware routing, owner/agent workflows.",
+    metaDescription:
+      "Case study: dealonproperty.com — a real estate marketplace founder-built on Next.js 16 + React 19. Server components, MapLibre, HLS video, geo-aware city detection, IndexNow + Google Indexing API, multi-tier sitemap. Targets 99acres / Magicbricks / Housing.com.",
+    hero: {
+      role: "Founder · Architect · Solo Engineer",
+      timeline: "2025 – Present",
+      teamSize: "1 (solo, AI-augmented)",
+      status: "Production · Live at dealonproperty.com",
+    },
+    overview: [
+      "A property marketplace I'm building as a founder — competing directly with 99acres, Magicbricks, and Housing.com in the Indian market. Owners and agents list properties; buyers and renters discover, save, compare, and inquire.",
+      "Server-first architecture on the latest Next.js 16 / React 19. Every route is RSC by default — the property detail page, search results, city landing pages, and blog all render on the server with structured data baked in. Auth-gated dashboards (my-properties, leads, favorites, billing) handle the personalized surface.",
+      "The competitive bet is SEO: every city + locality + project becomes its own indexable surface, instantly notified to Google + Bing + Yandex via IndexNow on every listing approval — so a new listing appears in search the same day it's published.",
+    ],
+    problem:
+      "Indian property portals optimize for inventory volume and ad revenue, not user experience. Listings are stale, owners are buried under agent calls, and search UX hasn't evolved in a decade. Building from zero on a modern stack means starting from clean fundamentals: fast pages, honest verification, structured booking instead of open-ended inquiry forms.",
+    solution: [
+      "Next.js 16 App Router with React 19 Server Components — every public page is server-rendered, hydration only where interactivity is needed",
+      "5-step property wizard (basics → details → location → media → review) with HLS video upload, image gallery, and MapLibre location picker",
+      "Geo-aware routing: middleware detects city via Vercel/Cloudflare edge headers, sticky cookie preference, and optional precise-geolocation upgrade — never prompts on page load",
+      "URL structure that maps to SEO intent: /properties/[country]/[city] as route segments; locality, type, price as query params (avoids static-param explosion)",
+      "Multi-tier sitemap: pages.xml + locations.xml + blog.xml + per-property sitemaps under sitemap-index — regenerated on every listing approve/reject via revalidate webhook",
+      "IndexNow integration: single key, pinged to Bing/Yandex/Seznam on every listing change — same coverage as Google's Indexing API in one HTTP call",
+      "JSON-LD structured data: RealEstateListing, Product, BreadcrumbList, ItemList per page — Google rich results, Bing rich previews",
+      "TanStack Query for client data, Zustand for client state, Zod for schema validation, React Hook Form for the wizard — type-safe end-to-end",
+      "Admin panel: moderation queue, coupon engine, employee accounts, inquiry management with status workflows",
+      "Billing surface with checkout result toast, plan management, coupon redemption — wires into the same auth cookie as the user dashboard",
+      "Cron-driven sweepers: property expiration, saved-search alerts (planned), stale-listing nudges to owners",
+      "MDX blog system for city guides and SEO content surfaces — auto-aggregated into the sitemap",
+    ],
+    techStack: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Tailwind v4",
+      "TanStack Query",
+      "Zustand",
+      "Zod",
+      "React Hook Form",
+      "MapLibre GL",
+      "HLS.js",
+      "Framer Motion",
+      "next-mdx-remote",
+      "Vercel",
+      "IndexNow API",
+      "Google Indexing API",
+    ],
+    outcome:
+      "Live in production at dealonproperty.com. Every new listing is server-rendered with structured data and pinged to Google + Bing + Yandex within seconds of approval. Core Web Vitals green on property detail pages. The platform is the live proof of what a single AI-augmented engineer can ship at the scale of a 10-person team.",
+  },
 };
 
 export const caseStudySlugs = Object.keys(caseStudies);
