@@ -2,9 +2,9 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "MD Athar Alam // Platform-Architect",
+  title: "Build With Athar // Platform-Architect",
   description:
-    "Senior Full-Stack Engineer · Platform Builder · SaaS Architect. 5 years architecting production SaaS — RAG pipelines, real-time systems, no-code builders, captcha infrastructure, multi-tenant platforms.",
+    "Build With Athar — Senior Full-Stack Engineer · Platform Builder · SaaS Architect. 5 years architecting production SaaS — RAG pipelines, real-time systems, no-code builders, captcha infrastructure, multi-tenant platforms.",
 };
 
 export default function RootLayout({

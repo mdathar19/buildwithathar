@@ -30,9 +30,9 @@ export default function Hero() {
         <div className="hero-grid">
           <div>
             <h1 className="hero-name">
-              <span className="l1">MD ATHAR</span>
+              <span className="l1">BUILD WITH</span>
               <span className="l2">
-                ALAM<span className="em"> /builds platforms/</span>
+                ATHAR<span className="em"> /builds platforms/</span>
               </span>
             </h1>
 
