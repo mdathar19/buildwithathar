@@ -3,6 +3,7 @@ import { getMailer, lookupIp, clientIp } from "@/lib/mailer";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 const BOT_PATTERN = /bot|crawler|spider|crawling|preview|googlebot|bingbot|yandex|baidu|duckduck|slurp|sogou|exabot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|discordbot|slackbot|ahrefs|semrush|mj12|petalbot|monitor|uptime|headless|lighthouse/i;
 
@@ -12,6 +13,7 @@ export async function POST(req: NextRequest) {
   const mailer = getMailer();
 
   if (!mailer || !to || !from) {
+    console.warn("[notify-visit] smtp_not_configured — env vars missing");
     return NextResponse.json({ ok: false, error: "smtp_not_configured" }, { status: 200 });
   }
 
@@ -25,12 +27,12 @@ export async function POST(req: NextRequest) {
   const ua = req.headers.get("user-agent") || "unknown";
 
   if (BOT_PATTERN.test(ua)) {
+    console.log("[notify-visit] skipped (bot):", ua.slice(0, 80));
     return NextResponse.json({ ok: true, skipped: "bot" }, { status: 200 });
   }
 
   const ip = clientIp(req.headers);
 
-  // Vercel edge headers as a fast fallback if ipapi.co is slow/blocked
   const edgeCountry = req.headers.get("x-vercel-ip-country") || "";
   const edgeCity = req.headers.get("x-vercel-ip-city")
     ? decodeURIComponent(req.headers.get("x-vercel-ip-city") as string)
@@ -42,47 +44,46 @@ export async function POST(req: NextRequest) {
   const screen = body.screen || "—";
   const when = body.ts || new Date().toISOString();
 
-  // Fire-and-forget so client never waits on us
-  (async () => {
-    try {
-      const geo = await lookupIp(ip);
+  try {
+    console.log("[notify-visit] starting send for ip=", ip, " path=", path);
+    const geo = await lookupIp(ip);
 
-      const city = geo.city !== "—" ? geo.city : edgeCity || "—";
-      const region = geo.region !== "—" ? geo.region : edgeRegion || "—";
-      const country = geo.country !== "—" ? geo.country : edgeCountry || "—";
+    const city = geo.city !== "—" ? geo.city : edgeCity || "—";
+    const region = geo.region !== "—" ? geo.region : edgeRegion || "—";
+    const country = geo.country !== "—" ? geo.country : edgeCountry || "—";
 
-      const mapsLink =
-        geo.lat !== "—" && geo.lon !== "—"
-          ? `https://www.google.com/maps?q=${geo.lat},${geo.lon}`
-          : null;
+    const mapsLink =
+      geo.lat !== "—" && geo.lon !== "—"
+        ? `https://www.google.com/maps?q=${geo.lat},${geo.lon}`
+        : null;
 
-      const subject = `New visit · ${city || "?"} · ${path}`;
+    const subject = `New visit · ${city || "?"} · ${path}`;
 
-      const text = [
-        `New visit on buildwithathar.com`,
-        ``,
-        `Path:        ${path}`,
-        `When:        ${when}`,
-        `Referer:     ${referer}`,
-        ``,
-        `IP:          ${ip}`,
-        `City:        ${city}`,
-        `Region:      ${region}`,
-        `Country:     ${country}`,
-        `Postal:      ${geo.postal}`,
-        `Coords:      ${geo.lat}, ${geo.lon}`,
-        mapsLink ? `Google Maps: ${mapsLink}` : "",
-        `Timezone:    ${geo.timezone}`,
-        `ISP / Org:   ${geo.isp}`,
-        `ASN:         ${geo.asn}`,
-        ``,
-        `Screen:      ${screen}`,
-        `User-Agent:  ${ua}`,
-      ]
-        .filter(Boolean)
-        .join("\n");
+    const text = [
+      `New visit on buildwithathar.com`,
+      ``,
+      `Path:        ${path}`,
+      `When:        ${when}`,
+      `Referer:     ${referer}`,
+      ``,
+      `IP:          ${ip}`,
+      `City:        ${city}`,
+      `Region:      ${region}`,
+      `Country:     ${country}`,
+      `Postal:      ${geo.postal}`,
+      `Coords:      ${geo.lat}, ${geo.lon}`,
+      mapsLink ? `Google Maps: ${mapsLink}` : "",
+      `Timezone:    ${geo.timezone}`,
+      `ISP / Org:   ${geo.isp}`,
+      `ASN:         ${geo.asn}`,
+      ``,
+      `Screen:      ${screen}`,
+      `User-Agent:  ${ua}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
 
-      const html = `
+    const html = `
 <!doctype html>
 <html><body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#0a0a0b;color:#eaeaea;padding:24px;margin:0;">
   <div style="max-width:600px;margin:0 auto;background:#111114;border:1px solid #2a2a2e;border-radius:12px;padding:26px;">
@@ -114,11 +115,19 @@ export async function POST(req: NextRequest) {
   <div style="text-align:center;color:#5a5a60;font-size:11px;margin-top:16px;font-family:monospace;">buildwithathar.com · visit tracker</div>
 </body></html>`;
 
-      await mailer.sendMail({ from, to, subject, text, html });
-    } catch (err) {
-      console.error("[notify-visit] failed:", (err as Error)?.message || err);
-    }
-  })();
-
-  return NextResponse.json({ ok: true }, { status: 200 });
+    const info = await mailer.sendMail({ from, to, subject, text, html });
+    console.log("[notify-visit] sent OK · messageId=", info.messageId, " · accepted=", info.accepted, " · rejected=", info.rejected);
+    return NextResponse.json({ ok: true, messageId: info.messageId }, { status: 200 });
+  } catch (err) {
+    const e = err as Error & { code?: string; response?: string };
+    console.error("[notify-visit] sendMail FAILED:", {
+      code: e?.code,
+      message: e?.message,
+      response: e?.response,
+    });
+    return NextResponse.json(
+      { ok: false, error: "send_failed", code: e?.code, message: e?.message },
+      { status: 200 }
+    );
+  }
 }
