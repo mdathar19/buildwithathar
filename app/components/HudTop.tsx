@@ -33,10 +33,10 @@ export default function HudTop() {
       <span>
         SYS_ATHAR <span className="sep">/</span> v5.2.0
       </span>
-      <span className="sep">|</span>
-      <span className="ok">● OPERATIONAL</span>
-      <span className="sep">|</span>
-      <span>
+      <span className="sep hud-collapse">|</span>
+      <span className="ok hud-collapse">● OPERATIONAL</span>
+      <span className="sep hud-collapse">|</span>
+      <span className="hud-collapse">
         UPTIME: <span style={{ color: "var(--ink)" }}>5y 1820d</span>
       </span>
       <span className="grow" />

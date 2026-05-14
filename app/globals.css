@@ -1081,6 +1081,21 @@ section { padding: 96px 0; position: relative; }
   .hud-side { display: none; }
   .hero-name { font-size: clamp(48px, 14vw, 96px); }
 }
+@media (max-width: 768px) {
+  main { padding-top: 32px; padding-bottom: 32px; }
+  section { padding: 64px 0; }
+  .section-head { margin-bottom: 36px; gap: 16px; }
+  .hud-top { padding: 8px 14px; gap: 12px; font-size: 10.5px; }
+  .hud-bottom { padding: 6px 14px; gap: 12px; font-size: 9.5px; }
+  .hero { padding: 70px 0 36px; }
+  .hero-blurb { font-size: 15px; margin-top: 28px; }
+  .hero-cta { margin-top: 28px; }
+  .btn { padding: 10px 14px; font-size: 11px; }
+  .manifest-body p { font-size: 15.5px; }
+  .manifest-body p:first-child::first-letter { font-size: 54px; }
+  .ticker { font-size: 10px; }
+}
+
 @media (max-width: 640px) {
   .cap-matrix { grid-template-columns: 1fr; }
   .plat-bar { grid-template-columns: 40px 1fr auto auto; gap: 10px; padding: 14px; }
@@ -1097,4 +1112,53 @@ section { padding: 96px 0; position: relative; }
   .hud-top .grow + a:not(:last-child) { display: none; }
   .edu { grid-template-columns: 1fr; }
   .edu-id { border-right: none; padding-right: 0; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+
+  .wrap { padding: 0 18px; }
+  .hero-meta-row { gap: 10px 18px; font-size: 10px; margin-bottom: 20px; }
+  .hero-name { font-size: clamp(44px, 13vw, 84px); letter-spacing: -0.04em; }
+  .hero-name .l2 { padding-left: 0.4em; }
+  .hero-tagline { font-size: 11.5px; gap: 8px 14px; margin-top: 22px; }
+  .hero-tagline .role { padding: 2px 7px; }
+  .hero-grid { gap: 32px; }
+  .node-graph { padding: 18px; max-width: 100%; }
+  .node-graph svg text { font-size: 9.5px; }
+  .plat-name { font-size: 14.5px; }
+  .plat-name .sub { display: block; margin-left: 0; margin-top: 2px; font-size: 11.5px; }
+  .plat-inner { padding: 16px 14px 18px; }
+  .plat-tag { font-size: 9px; padding: 2px 6px; }
+  .ops-header h3 { font-size: 24px; }
+  .ops-summary { font-size: 14px; }
+  .chan { grid-template-columns: 20px 70px 1fr auto; gap: 10px; font-size: 12px; padding: 14px 0; }
+  .chan .val { font-size: 12px; word-break: break-all; }
+  .tx h2 { font-size: clamp(28px, 7vw, 40px); }
+  .tx p { font-size: 13.5px; }
+  .cap { padding: 18px 16px 16px; }
+  .cap-title { font-size: 16px; }
+  .sys { padding: 22px 18px; }
+  .sys h4 { font-size: 17px; }
+}
+
+@media (max-width: 480px) {
+  .wrap { padding: 0 14px; }
+  section { padding: 52px 0; }
+  .hud-collapse { display: none; }
+  .hud-top { gap: 8px; padding: 7px 12px; font-size: 10px; }
+  .hud-bottom { gap: 8px; padding: 6px 12px; font-size: 9px; }
+  .hud-top a { font-size: 10px; }
+  .hero { padding: 56px 0 28px; }
+  .hero-name { font-size: clamp(38px, 14vw, 64px); }
+  .hero-cta { flex-direction: column; align-items: stretch; gap: 10px; }
+  .btn { justify-content: space-between; width: 100%; }
+  .plat-bar { grid-template-columns: 36px 1fr auto; gap: 10px; }
+  .plat-tag { display: none; }
+  .plat-metrics { grid-template-columns: repeat(2, 1fr); }
+  .plat-id { font-size: 10px; }
+  .ticker-track { gap: 24px; }
+  .section-label { font-size: 10px; }
+  .section-title { font-size: clamp(28px, 7.8vw, 40px); }
+  .tx { padding: 28px 18px; }
+  .tx-hdr { margin-bottom: 24px; font-size: 10px; }
+  .chan { grid-template-columns: 20px 1fr; gap: 10px; padding: 12px 0; }
+  .chan .lbl { display: none; }
+  .chan .arr { display: none; }
 }

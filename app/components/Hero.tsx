@@ -31,9 +31,7 @@ export default function Hero() {
           <div>
             <h1 className="hero-name">
               <span className="l1">BUILD WITH</span>
-              <span className="l2">
-                ATHAR<span className="em"> /builds platforms/</span>
-              </span>
+              <span className="l2">ATHAR</span>
             </h1>
 
             <div className="hero-tagline">
