@@ -1,4 +1,5 @@
 import { profile } from "@/lib/content";
+import ContactForm from "./ContactForm";
 
 export default function Transmit() {
   return (
@@ -60,6 +61,10 @@ export default function Transmit() {
                 <span className="arr" />
               </div>
             </div>
+          </div>
+
+          <div className="tx-form-wrap">
+            <ContactForm />
           </div>
         </div>
       </div>
