@@ -71,6 +71,7 @@ export type Platform = {
   sub: string;
   tag: string;
   flagship?: boolean;
+  slug?: string;
   metrics: { k: string; v: string; ok?: boolean }[];
   bullets: string[];
 };
@@ -81,6 +82,7 @@ export const platforms: Platform[] = [
     sub: "No-code platform with domain automation",
     tag: "FLAGSHIP",
     flagship: true,
+    slug: "website-builder-saas",
     metrics: [
       { k: "Tenants", v: "∞", ok: true },
       { k: "Stack", v: "SSR+CSR" },
@@ -103,6 +105,7 @@ export const platforms: Platform[] = [
     name: "BitoLink",
     sub: "Real-time team communication platform",
     tag: "LiveKit · Socket.io · WebRTC",
+    slug: "bitolink",
     metrics: [
       { k: "Transport", v: "LiveKit SFU", ok: true },
       { k: "Capacity", v: "Group" },
@@ -120,6 +123,7 @@ export const platforms: Platform[] = [
     name: "Multi-Tenant RAG Platform",
     sub: "AI knowledge retrieval system",
     tag: "LLM · Vector Search",
+    slug: "rag-chatbot",
     metrics: [
       { k: "Embedder", v: "OpenAI v3-sm", ok: true },
       { k: "Store", v: "Atlas M10" },
@@ -137,6 +141,7 @@ export const platforms: Platform[] = [
     name: "Paybito Whizzo",
     sub: "Domain-restricted AI chatbot backend",
     tag: "OpenAI · Express · Winston",
+    slug: "ai-assistant-chatbot",
     metrics: [
       { k: "Model", v: "ChatGPT", ok: true },
       { k: "Domain", v: "Paybito-only" },
@@ -154,6 +159,7 @@ export const platforms: Platform[] = [
     name: "Paybito reCAPTCHA Service",
     sub: "Self-hosted captcha platform",
     tag: "TypeScript · Redis · siteverify API",
+    slug: "captcha-service",
     metrics: [
       { k: "Mode", v: "Self-hosted", ok: true },
       { k: "Store", v: "Redis + MySQL" },
@@ -173,6 +179,7 @@ export const platforms: Platform[] = [
     name: "Feedback Central",
     sub: "Multi-tenant feedback collection platform",
     tag: "Embeddable Widget · MySQL · JWT",
+    slug: "feedback-central",
     metrics: [
       { k: "Widget", v: "~10KB ES5", ok: true },
       { k: "Auth", v: "Key + JWT" },
@@ -192,6 +199,7 @@ export const platforms: Platform[] = [
     name: "CRM",
     sub: "Sales operations · Built from scratch",
     tag: "Internal SaaS",
+    slug: "crm",
     metrics: [
       { k: "Modules", v: "6" },
       { k: "Access", v: "RBAC" },
@@ -207,6 +215,7 @@ export const platforms: Platform[] = [
     name: "HRMS",
     sub: "Human resources · Built from scratch",
     tag: "Internal SaaS",
+    slug: "hrms",
     metrics: [
       { k: "Modules", v: "5" },
       { k: "Workflow", v: "Approval" },
@@ -222,6 +231,7 @@ export const platforms: Platform[] = [
     name: "Dynamic Financial Reporting",
     sub: "Company P&L engine",
     tag: "Internal SaaS",
+    slug: "financial-reporting",
     metrics: [
       { k: "Engine", v: "Formula", ok: true },
       { k: "Output", v: "P&L · Trend" },

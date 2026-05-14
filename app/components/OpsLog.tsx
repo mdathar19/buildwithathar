@@ -136,6 +136,11 @@ function PlatformCard({
               <li key={i}>{b}</li>
             ))}
           </ul>
+          {p.slug && (
+            <a className="plat-case-link" href={`/projects/${p.slug}`}>
+              View case study →
+            </a>
+          )}
         </div>
       </div>
     </div>

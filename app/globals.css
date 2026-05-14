@@ -873,6 +873,28 @@ section { padding: 96px 0; position: relative; }
   font-size: 11px;
 }
 
+.plat-case-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .5px;
+  color: var(--ink);
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in oklch, var(--accent) 40%, transparent);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background .15s, border-color .15s, transform .15s;
+}
+.plat-case-link:hover {
+  background: color-mix(in oklch, var(--accent) 22%, transparent);
+  border-color: var(--accent);
+  transform: translateX(2px);
+}
+
 .job-bullets {
   list-style: none;
   padding: 0;
