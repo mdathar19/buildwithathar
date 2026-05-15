@@ -27,5 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [root, ...sections, ...projects];
+  const privacy: MetadataRoute.Sitemap[number] = {
+    url: `${SITE_URL}/privacy`,
+    lastModified,
+    changeFrequency: "yearly",
+    priority: 0.3,
+  };
+
+  return [root, ...sections, ...projects, privacy];
 }

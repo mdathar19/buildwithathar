@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import VisitTracker from "./components/VisitTracker";
+import AnalyticsTracker from "./components/AnalyticsTracker";
 
 const SITE_URL = "https://buildwithathar.com";
 const OG_IMAGE = "/android-chrome-512x512.png";
@@ -190,7 +190,7 @@ export default function RootLayout({
       </head>
       <body data-theme="dark">
         {children}
-        <VisitTracker />
+        <AnalyticsTracker />
       </body>
     </html>
   );
