@@ -370,18 +370,18 @@ export const caseStudies: Record<string, CaseStudy> = {
 
   "deal-on-property": {
     slug: "deal-on-property",
-    title: "Deal On Property — Founder Build",
+    title: "Deal On Property — Developer Build",
     subtitle: "A production real estate marketplace targeting the Indian market — Next.js 16 / React 19, server-first architecture, deep SEO surface, geo-aware routing, owner/agent workflows.",
     metaDescription:
-      "Case study: dealonproperty.com — a real estate marketplace founder-built on Next.js 16 + React 19. Server components, MapLibre, HLS video, geo-aware city detection, IndexNow + Google Indexing API, multi-tier sitemap. Targets 99acres / Magicbricks / Housing.com.",
+      "Case study: dealonproperty.com — a real estate marketplace built solo on Next.js 16 + React 19. Server components, MapLibre, HLS video, geo-aware city detection, IndexNow + Google Indexing API, multi-tier sitemap. Targets 99acres / Magicbricks / Housing.com.",
     hero: {
-      role: "Founder · Architect · Solo Engineer",
+      role: "Lead Developer · Architect · Solo Engineer",
       timeline: "2025 – Present",
       teamSize: "1 (solo, AI-augmented)",
       status: "Production · Live at dealonproperty.com",
     },
     overview: [
-      "A property marketplace I'm building as a founder — competing directly with 99acres, Magicbricks, and Housing.com in the Indian market. Owners and agents list properties; buyers and renters discover, save, compare, and inquire.",
+      "A real-estate marketplace I built as the solo developer — a platform going head-to-head with 99acres, Magicbricks, and Housing.com in the Indian market. Owners and agents list properties; buyers and renters discover, save, compare, and inquire.",
       "Server-first architecture on the latest Next.js 16 / React 19. Every route is RSC by default — the property detail page, search results, city landing pages, and blog all render on the server with structured data baked in. Auth-gated dashboards (my-properties, leads, favorites, billing) handle the personalized surface.",
       "The competitive bet is SEO: every city + locality + project becomes its own indexable surface, instantly notified to Google + Bing + Yandex via IndexNow on every listing approval — so a new listing appears in search the same day it's published.",
     ],

@@ -93,7 +93,7 @@ function Ticker() {
       <span className="star">✦</span> AI-augmented engineering · Claude Code
     </>,
     <>
-      <span className="star">✦</span> <span className="v">DealOnProperty</span> · founder build · live in prod
+      <span className="star">✦</span> <span className="v">DealOnProperty</span> · lead developer · live in prod
     </>,
   ];
 

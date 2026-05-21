@@ -5,10 +5,10 @@ export default function FounderBuild() {
         <div className="section-head">
           <div>
             <div className="section-label">
-              <span className="badge">FB</span> // FOUNDER_BUILD
+              <span className="badge">DP</span> // FLAGSHIP_BUILD
             </div>
             <h2 className="section-title">
-              Building <span className="em">independently</span>.
+              Built <span className="em">end-to-end</span>.
             </h2>
           </div>
           <div className="section-meta">
@@ -16,24 +16,24 @@ export default function FounderBuild() {
             <br />
             STATUS: <span className="v">LIVE</span>
             <br />
-            ROLE: <span className="v">FOUNDER · SOLO</span>
+            ROLE: <span className="v">LEAD DEVELOPER</span>
           </div>
         </div>
 
         <div className="founder-card">
           <div className="founder-head">
             <div>
-              <div className="founder-eyebrow">/// PRODUCTION · NOT EMPLOYER WORK</div>
+              <div className="founder-eyebrow">/// PRODUCTION · LIVE PLATFORM</div>
               <h3 className="founder-title">Deal On Property</h3>
               <div className="founder-sub">
-                Real estate marketplace · founder-built · targeting the Indian market
+                Real estate marketplace · developed end-to-end · targeting the Indian market
               </div>
             </div>
-            <div className="founder-tag">FOUNDER</div>
+            <div className="founder-tag">DEVELOPER</div>
           </div>
 
           <p className="founder-blurb">
-            A property marketplace I'm building solo — competing with 99acres, Magicbricks, and Housing.com.
+            The real-estate marketplace I built solo as the developer — going head-to-head with 99acres, Magicbricks, and Housing.com.
             Next.js 16 / React 19 with a server-first architecture: every public page is RSC, structured data
             baked in at render time, IndexNow + Google Indexing API push new listings to search engines
             within seconds of approval. Live at{" "}

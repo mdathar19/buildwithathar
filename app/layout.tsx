@@ -125,7 +125,7 @@ const personLd = {
   email: "mailto:mdathar19@gmail.com",
   telephone: "+91-8617852693",
   sameAs: [
-    "https://www.linkedin.com/in/md-athar-alam",
+    "https://www.linkedin.com/in/md-athar-a5067b18b/",
     "https://github.com/mdathar19",
   ],
   knowsAbout: [

@@ -6,8 +6,8 @@ export const profile = {
     phone: "+91-8617852693",
     phoneHref: "+918617852693",
     email: "mdathar19@gmail.com",
-    linkedin: "https://www.linkedin.com/in/md-athar-alam",
-    linkedinLabel: "linkedin.com/in/md-athar-alam",
+    linkedin: "https://www.linkedin.com/in/md-athar-a5067b18b/",
+    linkedinLabel: "linkedin.com/in/md-athar-a5067b18b",
   },
 };
 
