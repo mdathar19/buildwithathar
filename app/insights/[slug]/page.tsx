@@ -10,6 +10,7 @@ import RightRailTOC from "@/app/components/insights/RightRailTOC";
 import SupportThisPost from "@/app/components/insights/SupportThisPost";
 import CommentForm from "@/app/components/insights/CommentForm";
 import CommentList from "@/app/components/insights/CommentList";
+import InsightVisitorMap from "@/app/components/insights/InsightVisitorMap";
 
 const SITE_URL = "https://buildwithathar.com";
 
@@ -152,6 +153,8 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
             <CommentForm slug={post.slug} />
             <CommentList slug={post.slug} />
           </section>
+
+          <InsightVisitorMap slug={post.slug} />
         </article>
       </div>
     </div>

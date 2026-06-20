@@ -65,6 +65,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, skipped: "bot" }, { status: 200 });
     }
 
+    // Only email for sessions that started at the home page. Insight / project /
+    // admin / privacy entry paths get recorded but don't trigger a notification.
+    const entryPathname = String(session.entryPath || "/").split("?")[0].split("#")[0];
+    if (entryPathname !== "/") {
+      return NextResponse.json(
+        { ok: true, skipped: "non_home_entry", entryPath: session.entryPath },
+        { status: 200 }
+      );
+    }
+
     const events = await eCol
       .find({ sessionId })
       .sort({ ts: 1 })
