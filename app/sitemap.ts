@@ -4,6 +4,11 @@ import { getAllInsights } from "@/lib/insights";
 
 const SITE_URL = "https://buildwithathar.com";
 
+// Hash anchors (e.g. /#capability) are not separately-indexable URLs in
+// Google's eyes — they all resolve to /. Listing them in the sitemap only
+// produces "Discovered — currently not indexed" warnings in Search Console.
+// Each section is reachable via the home page; that's enough.
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
@@ -13,13 +18,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly",
     priority: 1,
   };
-
-  const sections = ["manifest", "capability", "ops", "systems", "transmit"].map((hash) => ({
-    url: `${SITE_URL}/#${hash}`,
-    lastModified,
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
 
   const projects = caseStudySlugs.map((slug) => ({
     url: `${SITE_URL}/projects/${slug}`,
@@ -49,5 +47,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.3,
   };
 
-  return [root, ...sections, ...projects, insightsIndex, ...insightsPosts, privacy];
+  return [root, ...projects, insightsIndex, ...insightsPosts, privacy];
 }
