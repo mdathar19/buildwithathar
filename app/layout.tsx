@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   keywords: [
     "MD Athar Alam",
     "Athar Alam",
+    "Athar Akru",
+    "athar akru",
     "Build With Athar",
     "buildwithathar",
     "Senior Full-Stack Engineer",
@@ -118,7 +120,7 @@ const personLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "MD Athar Alam",
-  alternateName: ["Athar Alam", "Build With Athar"],
+  alternateName: ["Athar Alam", "Athar Akru", "Build With Athar"],
   url: SITE_URL,
   image: `${SITE_URL}/android-chrome-512x512.png`,
   jobTitle: "Senior Full-Stack Engineer",

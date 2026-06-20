@@ -124,7 +124,11 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
         </aside>
 
         <article className="insight-prose">
-          <MDXRemote source={post.body} components={mdxComponents} />
+          <MDXRemote
+            source={post.body}
+            components={mdxComponents}
+            options={{ blockJS: false }}
+          />
 
           <div className="insight-mobile-support">
             <SupportThisPost slug={post.slug} />
