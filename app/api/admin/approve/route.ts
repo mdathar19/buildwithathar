@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
-import { insightCommentsCol } from "@/lib/insight-collections";
+import { insightCommentsCol, type CommentStatus } from "@/lib/insight-collections";
 import { checkAdminSecret, verifyCommentToken } from "@/lib/admin-token";
 
 export const runtime = "nodejs";
@@ -48,8 +48,9 @@ export async function POST(req: NextRequest) {
     if (!col) {
       return NextResponse.json({ ok: false, error: "db_not_configured" }, { status: 200 });
     }
-    const set: Record<string, unknown> = { status: action };
-    if (action === "approve") set.approvedAt = new Date();
+    const newStatus: CommentStatus = action === "approve" ? "approved" : "spam";
+    const set: Record<string, unknown> = { status: newStatus };
+    if (newStatus === "approved") set.approvedAt = new Date();
     const result = await col.findOneAndUpdate({ _id: oid }, { $set: set }, { returnDocument: "after" });
     if (!result) {
       return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
       revalidatePath(`/insights/${result.slug}`);
     } catch {}
 
-    return NextResponse.json({ ok: true, status: action, slug: result.slug });
+    return NextResponse.json({ ok: true, status: newStatus, slug: result.slug });
   } catch (err) {
     const e = err as Error;
     console.error("[admin/approve] failed:", e?.message);
