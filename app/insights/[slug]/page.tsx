@@ -25,10 +25,15 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   if (!post) return {};
   const url = `${SITE_URL}/insights/${post.slug}`;
   const desc = post.metaDescription || post.summary;
+  const ogImageUrl = `${SITE_URL}/insights/${post.slug}/opengraph-image`;
+  const ogAlt = `${post.title} — Build With Athar`;
+
   return {
-    title: `${post.title} — Insights`,
+    title: post.title,
     description: desc,
     alternates: { canonical: `/insights/${post.slug}` },
+    keywords: [...post.tags, "MD Athar Alam", "Athar Akru", "Build With Athar"],
+    authors: [{ name: profile.name, url: SITE_URL }],
     openGraph: {
       type: "article",
       url,
@@ -36,13 +41,39 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       title: post.title,
       description: desc,
       publishedTime: post.publishedAt,
-      authors: [profile.name],
+      modifiedTime: post.publishedAt,
+      authors: [SITE_URL],
       tags: post.tags,
+      section: "Insights",
+      locale: "en_US",
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: ogAlt,
+          type: "image/png",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: desc,
+      creator: "@BuildWithAthar",
+      site: "@BuildWithAthar",
+      images: [{ url: ogImageUrl, alt: ogAlt }],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
     },
   };
 }
@@ -57,25 +88,60 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
   const post = getInsight(params.slug);
   if (!post) notFound();
 
+  const postUrl = `${SITE_URL}/insights/${post.slug}`;
+  const ogImageUrl = `${SITE_URL}/insights/${post.slug}/opengraph-image`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
+    "@id": `${postUrl}#article`,
     headline: post.title,
     description: post.metaDescription || post.summary,
-    url: `${SITE_URL}/insights/${post.slug}`,
+    url: postUrl,
     datePublished: post.publishedAt,
     dateModified: post.publishedAt,
-    author: { "@type": "Person", name: profile.name, url: SITE_URL },
-    publisher: {
+    author: {
       "@type": "Person",
       name: profile.name,
       url: SITE_URL,
-      logo: { "@type": "ImageObject", url: `${SITE_URL}/android-chrome-512x512.png` },
+      sameAs: [
+        "https://www.linkedin.com/in/md-athar-a5067b18b/",
+        "https://github.com/mdathar19",
+      ],
     },
-    image: `${SITE_URL}/insights/${post.slug}/opengraph-image`,
-    mainEntityOfPage: `${SITE_URL}/insights/${post.slug}`,
-    keywords: post.tags.join(", "),
+    publisher: {
+      "@type": "Organization",
+      name: "Build With Athar",
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/android-chrome-512x512.png`,
+        width: 512,
+        height: 512,
+      },
+    },
+    image: [
+      {
+        "@type": "ImageObject",
+        url: ogImageUrl,
+        width: 1200,
+        height: 630,
+      },
+    ],
+    mainEntityOfPage: { "@type": "WebPage", "@id": postUrl },
+    keywords: post.tags,
+    articleSection: "Insights",
     inLanguage: "en",
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Insights", item: `${SITE_URL}/insights` },
+      { "@type": "ListItem", position: 3, name: post.title, item: postUrl },
+    ],
   };
 
   return (
@@ -83,6 +149,10 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       <ReadingProgress />
 

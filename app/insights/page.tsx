@@ -4,11 +4,25 @@ import { getAllInsights } from "@/lib/insights";
 
 const SITE_URL = "https://buildwithathar.com";
 
+const OG = `${SITE_URL}/insights/opengraph-image`;
+const OG_ALT = "Insights — Build With Athar";
+
 export const metadata: Metadata = {
-  title: "Insights — Build With Athar",
+  title: "Insights",
   description:
-    "Field notes from shipping real production systems. Architecture, AI, and the messy parts in between — each post interactive, opinionated, and short.",
+    "Field notes from shipping real production systems. Architecture, AI, and the messy parts in between — each post interactive, opinionated, and short. By MD Athar Alam (Athar Akru).",
   alternates: { canonical: "/insights" },
+  keywords: [
+    "MD Athar Alam",
+    "Athar Akru",
+    "Build With Athar",
+    "engineering insights",
+    "AI architecture",
+    "Generative AI",
+    "Model Context Protocol",
+    "RAG pipelines",
+    "field notes",
+  ],
   openGraph: {
     type: "website",
     url: `${SITE_URL}/insights`,
@@ -16,13 +30,27 @@ export const metadata: Metadata = {
     title: "Insights — Build With Athar",
     description:
       "Field notes from shipping real production systems. Each post interactive, opinionated, and short.",
-    images: [{ url: "/android-chrome-512x512.png", width: 512, height: 512 }],
+    locale: "en_US",
+    images: [{ url: OG, width: 1200, height: 630, alt: OG_ALT, type: "image/png" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Insights — Build With Athar",
     description: "Field notes from shipping real production systems.",
-    images: ["/android-chrome-512x512.png"],
+    creator: "@BuildWithAthar",
+    site: "@BuildWithAthar",
+    images: [{ url: OG, alt: OG_ALT }],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
   },
 };
 
