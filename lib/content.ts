@@ -12,13 +12,33 @@ export const profile = {
 };
 
 export const summary = [
-  "Senior Full-Stack Engineer with 5 years of experience architecting and building production-grade SaaS platforms from scratch — spanning real-time communication systems, AI/RAG pipelines, no-code website builders with automated DNS infrastructure, security/captcha infrastructure, AI chatbot services, embeddable developer tooling, and internal enterprise tooling (CRM, HRMS, Financial systems). Proven ability to own entire product surfaces end-to-end: from system architecture and monorepo design to cloud infrastructure provisioning, multi-tenancy, and payment integrations.",
-  "Practitioner of AI-augmented engineering — leverages Claude Code and AI agent workflows as a force multiplier to architect and ship systems that would traditionally require larger teams. Uses AI not as a code generator but as a collaborative engineering layer: breaking down complex system designs, validating architecture decisions, and accelerating delivery of production-grade platforms without compromising depth or quality.",
+  "Senior Full-Stack Engineer with 5 years of experience architecting and building production-grade SaaS platforms from scratch — spanning generative-AI systems (AI agent tooling via Model Context Protocol servers, RAG knowledge-retrieval pipelines, grounded domain-restricted AI chatbots), real-time communication systems, no-code website builders with automated DNS infrastructure, security/captcha infrastructure, embeddable developer tooling, and internal enterprise tooling (CRM, HRMS, Financial systems). Proven ability to own entire product surfaces end-to-end: from system architecture and monorepo design to cloud infrastructure provisioning, multi-tenancy, and payment integrations.",
+  "Practitioner of AI-augmented engineering — leverages Claude Code and AI agent workflows as a force multiplier to architect and ship systems that would traditionally require larger teams. Uses AI not as a code generator but as a collaborative engineering layer: breaking down complex system designs, validating architecture decisions, and accelerating delivery of production-grade platforms — the RAG pipeline, BitoLink, the config-driven rendering engine, the MCP knowledge server — without compromising depth or quality.",
 ];
 
 export type Competency = { label: string; items: string[]; depth: number };
 
 export const competencies: Competency[] = [
+  {
+    label: "Generative AI / LLM",
+    depth: 6,
+    items: ["OpenAI GPT-4", "RAG", "Vector Embeddings (v3-sm)", "Semantic Search", "Prompt Engineering", "System-Prompt Guardrails", "Grounded Chatbots", "Hallucination Reduction"],
+  },
+  {
+    label: "AI Agent Tooling (MCP)",
+    depth: 6,
+    items: ["Model Context Protocol Servers", "FastMCP", "@modelcontextprotocol/sdk", "OpenAPI Normalization", "Intent-based Routing", "Read-only Knowledge Servers", "PyPI + npm Dual Publish"],
+  },
+  {
+    label: "RAG Infrastructure",
+    depth: 6,
+    items: ["Web Crawling Pipelines", "Text Chunking & Overlap", "Per-tenant Embedding Namespaces", "MongoDB Atlas M10 Vector Search", "Cited-source Retrieval", "Usage Metering"],
+  },
+  {
+    label: "AI-Augmented Dev",
+    depth: 6,
+    items: ["Claude Code", "AI Agent Workflows", "LLM-assisted Architecture", "Solo Platform Delivery"],
+  },
   {
     label: "Platform Engineering",
     depth: 6,
@@ -35,19 +55,14 @@ export const competencies: Competency[] = [
     items: ["Node.js", "Express", "REST APIs", "WebSocket / Socket.io", "WebRTC (STUN/TURN)", "Multi-tenant APIs", "Webhook Orchestration", "TypeScript"],
   },
   {
-    label: "AI / RAG Systems",
+    label: "Real-time Systems",
     depth: 5,
-    items: ["OpenAI / GPT-4", "RAG Pipelines", "Web Crawling", "Text Chunking", "Vector Embeddings", "Atlas Vector Search", "Function Calling"],
+    items: ["WebRTC P2P", "LiveKit SFU", "Google STUN", "Custom TURN", "Socket.io", "Live Collaboration"],
   },
   {
     label: "Cloud & Infrastructure",
     depth: 5,
     items: ["AWS Route53", "AWS SES", "SSL Automation", "SSH Provisioning", "Domain State Machine", "PayPal Subscriptions", "Docker Compose"],
-  },
-  {
-    label: "Real-time Systems",
-    depth: 5,
-    items: ["WebRTC P2P", "LiveKit SFU", "Google STUN", "Custom TURN", "Socket.io", "Live Collaboration"],
   },
   {
     label: "Security & Infra Services",
@@ -58,11 +73,6 @@ export const competencies: Competency[] = [
     label: "Databases",
     depth: 5,
     items: ["MongoDB Atlas (M10)", "MySQL 8", "Redis", "Mongoose", "MVC Pattern", "Vector Cluster"],
-  },
-  {
-    label: "AI-Augmented Dev",
-    depth: 5,
-    items: ["Claude Code", "AI Agent Workflows", "LLM-assisted Arch", "Prompt Engineering", "Solo Platform Delivery"],
   },
 ];
 
@@ -77,6 +87,25 @@ export type Platform = {
 };
 
 export const platforms: Platform[] = [
+  {
+    name: "PayBito Integration MCP",
+    sub: "AI agent knowledge server",
+    tag: "Model Context Protocol · PyPI + npm",
+    slug: "paybito-mcp",
+    metrics: [
+      { k: "Operations", v: "~1,060", ok: true },
+      { k: "Hosts", v: "Multi" },
+      { k: "Packages", v: "PyPI + npm" },
+      { k: "Mode", v: "Read-only" },
+    ],
+    bullets: [
+      "Built a cross-platform Model Context Protocol (MCP) knowledge server that injects PayBito's full API surface into any MCP-capable AI assistant (Claude Code, Cursor, Codex, Gemini) — letting developers write correct integration code in plain language. Read-only by design: serves documentation only, never executes live calls, moves funds, or reads balances.",
+      "Engineered a spec-normalization pipeline that distills PayBito's published OpenAPI specs — ~1,060 unique operations across multiple hosts — into one clean model: repairing spec quirks (hostnames baked into path keys, missing securitySchemes, empty servers), deduplicating overlapping operations, and resolving each operation's auth realm and nested request schema.",
+      "Designed intent-based routing: the server asks the developer one question — \"what are you building?\" — and scopes results to the right product module (exchange / payments / gateway / platform), so a merchant-payments request never resolves to the trading API.",
+      "Modeled white-label base-URL handling, multi-scheme per-operation auth, and payments test/live sandbox awareness — emitting a developer-supplied BASE_URL and exact request shapes instead of hardcoding hosts or guessing nested bodies.",
+      "Shipped as two published packages from one source of truth, both named paybito-mcp — Python on PyPI (FastMCP) and TypeScript on npm (@modelcontextprotocol/sdk) — backed by a shared generated model and a regression test suite.",
+    ],
+  },
   {
     name: "Website Builder SaaS",
     sub: "No-code platform with domain automation",
@@ -262,7 +291,7 @@ export const experience: Job[] = [
     badge: "Lead Developer",
     period: "Jan 2024 — Present",
     summary:
-      "Sole lead developer responsible for designing and shipping nine production platforms from zero — real-time communication, AI knowledge retrieval, no-code publishing, security/captcha infrastructure, AI chatbots, embeddable developer tooling, CRM, HRMS, and financial reporting.",
+      "Sole lead developer responsible for designing and shipping ten production platforms from zero — AI agent tooling (Model Context Protocol), AI knowledge retrieval (RAG), domain-restricted AI chatbots, real-time communication, security/captcha infrastructure, embeddable developer tooling, CRM, HRMS, financial reporting, and no-code website publishing.",
     hasPlatforms: true,
   },
   {
@@ -295,6 +324,7 @@ export const architecture: { title: string; body: string }[] = [
   { title: "Captcha Token Lifecycle", body: "Designed JWT issue + atomic single-use consume against Redis so a verification token can only be exchanged once even under race conditions — server-side puzzle state, iframe-isolated UI." },
   { title: "Embeddable Widget Pattern", body: "Standalone ES5 widgets (Feedback Central, captcha loader, RAG chatbot) with zero build step — host apps drop in a script tag, widget posts to a dual-auth API surface." },
   { title: "Editor State Engine", body: "Command-pattern undo/redo for the website builder editor — granular reversibility of section edits, reordering, style changes, and content updates." },
+  { title: "OpenAPI → AI Knowledge Model", body: "Normalization pipeline that merges and deduplicates ~1,060 operations from multiple OpenAPI specs into a single queryable model, served through a Model Context Protocol server (read-only Resources, Prompts, Tools) — published to both PyPI and npm from one shared source of truth, with intent-based module routing so AI assistants resolve the correct product surface." },
   { title: "AI-Augmented Engineering", body: "Claude Code and AI agent workflows as a collaborative layer across system design, validation, and implementation — enabling solo delivery of platform-scale systems." },
 ];
 
@@ -306,12 +336,13 @@ export const education = {
 
 export const nodes = [
   { label: "WEBSITE_BUILDER", short: "BUILDER", flagship: true, angle: -90 },
-  { label: "BITOLINK_RTC", short: "BITOLINK", angle: -50 },
-  { label: "RAG_PLATFORM", short: "RAG", angle: -10 },
-  { label: "WHIZZO_AI", short: "WHIZZO", angle: 30 },
-  { label: "RECAPTCHA", short: "CAPTCHA", angle: 70 },
-  { label: "FEEDBACK_CENTRAL", short: "FEEDBACK", angle: 110 },
-  { label: "FIN_P&L", short: "FIN_P&L", angle: 150 },
-  { label: "HRMS", short: "HRMS", angle: 190 },
-  { label: "CRM", short: "CRM", angle: 230 },
+  { label: "PAYBITO_MCP", short: "MCP", flagship: true, angle: -54 },
+  { label: "BITOLINK_RTC", short: "BITOLINK", angle: -18 },
+  { label: "RAG_PLATFORM", short: "RAG", angle: 18 },
+  { label: "WHIZZO_AI", short: "WHIZZO", angle: 54 },
+  { label: "RECAPTCHA", short: "CAPTCHA", angle: 90 },
+  { label: "FEEDBACK_CENTRAL", short: "FEEDBACK", angle: 126 },
+  { label: "FIN_P&L", short: "FIN_P&L", angle: 162 },
+  { label: "HRMS", short: "HRMS", angle: 198 },
+  { label: "CRM", short: "CRM", angle: 234 },
 ];

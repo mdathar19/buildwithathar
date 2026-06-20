@@ -9,6 +9,7 @@ import CapMatrix from "./components/CapMatrix";
 import OpsLog from "./components/OpsLog";
 import FounderBuild from "./components/FounderBuild";
 import SysGrid from "./components/SysGrid";
+import InsightsTeaser from "./components/InsightsTeaser";
 import VisitorsMap from "./components/VisitorsMap";
 import Transmit from "./components/Transmit";
 
@@ -26,6 +27,7 @@ export default function Page() {
         <OpsLog />
         <FounderBuild />
         <SysGrid />
+        <InsightsTeaser />
         <VisitorsMap />
         <Transmit />
       </main>

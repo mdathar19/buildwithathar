@@ -161,7 +161,7 @@ export default function NodeGraph() {
       <span className="br-br" />
       <div className="hdr">
         <span>// NODE_TOPOLOGY.svg</span>
-        <span className="ok">9/9 ONLINE</span>
+        <span className="ok">{nodes.length}/{nodes.length} ONLINE</span>
       </div>
       <svg ref={svgRef} viewBox="0 0 400 360" />
       <div className="ftr">

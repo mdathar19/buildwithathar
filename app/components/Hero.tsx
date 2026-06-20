@@ -1,7 +1,10 @@
+import Link from "next/link";
 import NodeGraph from "./NodeGraph";
 import HeroCTA from "./HeroCTA";
+import { getAllInsights } from "@/lib/insights";
 
 export default function Hero() {
+  const latest = getAllInsights()[0];
   return (
     <section className="hero" id="hero">
       <div className="wrap">
@@ -42,11 +45,20 @@ export default function Hero() {
             </div>
 
             <p className="hero-blurb">
-              I architect production-grade SaaS systems end-to-end — from monorepo design and{" "}
-              <span className="em">config-driven rendering engines</span> to multi-tenant DNS
-              automation, AI/RAG pipelines, and self-hosted captcha infrastructure. Solo lead on{" "}
-              <span className="em">nine platforms</span> in five years.
+              I architect production-grade SaaS systems end-to-end — from{" "}
+              <span className="em">AI agent tooling</span> (Model Context Protocol) and RAG
+              pipelines to config-driven rendering engines, multi-tenant DNS automation, and
+              self-hosted captcha infrastructure. Solo lead on{" "}
+              <span className="em">ten platforms</span> in five years.
             </p>
+
+            {latest && (
+              <Link href={`/insights/${latest.slug}`} className="hero-insight-pill">
+                <span className="hero-insight-flag">▸ NEW · INSIGHT</span>
+                <span className="hero-insight-title">&ldquo;{latest.title}&rdquo;</span>
+                <span className="hero-insight-arr">↗</span>
+              </Link>
+            )}
 
             <HeroCTA />
           </div>
@@ -66,10 +78,13 @@ function Ticker() {
       <span className="star">✦</span> <span className="v">5</span> years engineering
     </>,
     <>
-      <span className="star">✦</span> <span className="v">9</span> production platforms shipped
+      <span className="star">✦</span> <span className="v">10</span> production platforms shipped
     </>,
     <>
       <span className="star">✦</span> <span className="v">SOLO LEAD</span> · zero handoff
+    </>,
+    <>
+      <span className="star">✦</span> <span className="v">MCP</span> knowledge server · PyPI + npm dual-publish
     </>,
     <>
       <span className="star">✦</span> RAG · WebRTC · LiveKit · MongoDB Atlas

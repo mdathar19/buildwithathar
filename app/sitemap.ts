@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { caseStudySlugs } from "@/lib/case-studies";
+import { getAllInsights } from "@/lib/insights";
 
 const SITE_URL = "https://buildwithathar.com";
 
@@ -27,6 +28,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const insights = getAllInsights();
+  const insightsIndex: MetadataRoute.Sitemap[number] = {
+    url: `${SITE_URL}/insights`,
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  };
+  const insightsPosts = insights.map((post) => ({
+    url: `${SITE_URL}/insights/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
   const privacy: MetadataRoute.Sitemap[number] = {
     url: `${SITE_URL}/privacy`,
     lastModified,
@@ -34,5 +49,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.3,
   };
 
-  return [root, ...sections, ...projects, privacy];
+  return [root, ...sections, ...projects, insightsIndex, ...insightsPosts, privacy];
 }

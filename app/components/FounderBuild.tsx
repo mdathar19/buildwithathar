@@ -14,7 +14,7 @@ export default function FounderBuild() {
           <div className="section-meta">
             PROJECT: <span className="v">DEAL_ON_PROPERTY</span>
             <br />
-            STATUS: <span className="v">LIVE</span>
+            STATUS: <span className="v">LIVE · WEB + ANDROID</span>
             <br />
             ROLE: <span className="v">LEAD DEVELOPER</span>
           </div>
@@ -26,7 +26,7 @@ export default function FounderBuild() {
               <div className="founder-eyebrow">/// PRODUCTION · LIVE PLATFORM</div>
               <h3 className="founder-title">Deal On Property</h3>
               <div className="founder-sub">
-                Real estate marketplace · developed end-to-end · targeting the Indian market
+                Real estate marketplace · developed end-to-end · web + Android · targeting the Indian market
               </div>
             </div>
             <div className="founder-tag">DEVELOPER</div>
@@ -37,8 +37,11 @@ export default function FounderBuild() {
             Next.js 16 / React 19 with a server-first architecture: every public page is RSC, structured data
             baked in at render time, IndexNow + Google Indexing API push new listings to search engines
             within seconds of approval. Live at{" "}
-            <a href="https://dealonproperty.com" target="_blank" rel="noopener noreferrer" className="founder-link">
+            <a href="https://www.dealonproperty.com/" target="_blank" rel="noopener noreferrer" className="founder-link">
               dealonproperty.com
+            </a>, with a companion Android app on the{" "}
+            <a href="https://play.google.com/store/apps/details?id=com.dealonproperty.mobile" target="_blank" rel="noopener noreferrer" className="founder-link">
+              Google Play Store
             </a>.
           </p>
 
@@ -84,11 +87,19 @@ export default function FounderBuild() {
             </a>
             <a
               className="founder-btn"
-              href="https://dealonproperty.com"
+              href="https://www.dealonproperty.com/"
               target="_blank"
               rel="noopener noreferrer"
             >
               Visit dealonproperty.com ↗
+            </a>
+            <a
+              className="founder-btn"
+              href="https://play.google.com/store/apps/details?id=com.dealonproperty.mobile"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Get on Play Store ▶
             </a>
           </div>
         </div>

@@ -44,7 +44,8 @@ export default function HudTop() {
       <a href="#capability" onClick={(e) => nav(e, "capability")}>02 STACK</a>
       <a href="#ops" onClick={(e) => nav(e, "ops")}>03 OPS</a>
       <a href="#systems" onClick={(e) => nav(e, "systems")}>04 SYSTEMS</a>
-      <a href="#transmit" onClick={(e) => nav(e, "transmit")}>05 TRANSMIT</a>
+      <a href="/insights" className="hud-link-ext">05 INSIGHTS</a>
+      <a href="#transmit" onClick={(e) => nav(e, "transmit")}>06 TRANSMIT</a>
       <span className="sep">|</span>
       <span>{clock}</span>
     </div>

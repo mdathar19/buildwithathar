@@ -92,6 +92,44 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
             <div className="cs-meta-v">{study.hero.status}</div>
           </div>
         </div>
+
+        {study.links && (study.links.web || study.links.android || study.links.ios) && (
+          <div className="cs-live-links">
+            <div className="cs-meta-k">LIVE</div>
+            <div className="cs-live-chips">
+              {study.links.web && (
+                <a
+                  href={study.links.web}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cs-live-chip"
+                >
+                  ↗ Website
+                </a>
+              )}
+              {study.links.android && (
+                <a
+                  href={study.links.android}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cs-live-chip"
+                >
+                  ▶ Play Store · Android
+                </a>
+              )}
+              {study.links.ios && (
+                <a
+                  href={study.links.ios}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cs-live-chip"
+                >
+                   App Store · iOS
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       <section className="cs-section">

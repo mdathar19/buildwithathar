@@ -15,9 +15,60 @@ export type CaseStudy = {
   techStack: string[];
   outcome: string;
   hasDiagram?: boolean;
+  links?: {
+    web?: string;
+    android?: string;
+    ios?: string;
+  };
 };
 
 export const caseStudies: Record<string, CaseStudy> = {
+  "paybito-mcp": {
+    slug: "paybito-mcp",
+    title: "PayBito Integration MCP — AI Agent Knowledge Server",
+    subtitle: "A Model Context Protocol server that injects PayBito's full API surface into any MCP-capable AI assistant — letting developers write correct integration code in plain language. Read-only by design; ships as dual-language packages on PyPI + npm from one source of truth.",
+    metaDescription:
+      "Case study: PayBito Integration MCP — an AI agent knowledge server (Model Context Protocol) that normalizes ~1,060 OpenAPI operations across multiple PayBito hosts into one queryable model, with intent-based product routing. Read-only, dual-published to PyPI (FastMCP) and npm (@modelcontextprotocol/sdk) from a shared generated model.",
+    hero: {
+      role: "Sole Author · Architect · Spec Engineer",
+      timeline: "2025",
+      teamSize: "1 (solo, AI-augmented)",
+      status: "Published · PyPI + npm · Read-only",
+    },
+    links: {
+      web: "https://pypi.org/project/paybito-mcp/",
+    },
+    overview: [
+      "A Model Context Protocol (MCP) knowledge server that PayBito developers plug into Claude Code, Cursor, Codex, or Gemini — and immediately get correct, scoped, auth-aware PayBito integration code from natural-language requests.",
+      "Read-only by design: the server distributes documentation and request shapes only. It never executes live calls, never reads balances, never moves funds. The threat model is documentation accuracy, not runtime trust.",
+      "Shipped as two published packages from one source of truth — paybito-mcp on PyPI (FastMCP) and on npm (@modelcontextprotocol/sdk) — backed by a shared generated model and a regression test suite.",
+    ],
+    problem:
+      "PayBito publishes OpenAPI specs across many hosts and product surfaces (exchange, payments, gateway, platform). Specs have practical quirks — hostnames baked into path keys, missing securitySchemes, empty servers fields, overlapping operations across hosts — and developers integrating PayBito routinely call the wrong endpoint, pass the wrong auth scheme, or miss nested request bodies. Documentation tells you it works; the AI assistant tells you exactly how, in your code.",
+    solution: [
+      "Spec-normalization pipeline: distills ~1,060 unique operations across multiple OpenAPI hosts into one clean model — repairs spec quirks, deduplicates, resolves auth realm per operation",
+      "Intent-based product routing: server asks one question — \"what are you building?\" — and scopes results to the right module (exchange / payments / gateway / platform), so a merchant-payments request never resolves to the trading API",
+      "White-label base-URL handling: emits a developer-supplied BASE_URL rather than hardcoding hosts — works for any PayBito tenant deployment",
+      "Multi-scheme per-operation auth + payments test/live sandbox awareness — exact auth shape returned with every operation",
+      "Read-only contract: only MCP Resources, Prompts, and Tools that return documentation; no execution surface",
+      "Dual-language publish: Python (FastMCP) + TypeScript (@modelcontextprotocol/sdk) from a shared generated model — same operations, same auth resolution, same intent routing in both",
+      "Regression test suite that locks the normalization output — spec drift caught at CI before publish",
+    ],
+    techStack: [
+      "Model Context Protocol",
+      "FastMCP (Python)",
+      "@modelcontextprotocol/sdk (TypeScript)",
+      "OpenAPI 3.x normalization",
+      "PyPI",
+      "npm",
+      "JSON Schema",
+      "Pydantic",
+      "Zod",
+    ],
+    outcome:
+      "Live on PyPI (pypi.org/project/paybito-mcp) and npm (npmjs.com/package/paybito-mcp). PayBito's full API surface — ~1,060 normalized operations, intent-routed by product, auth-aware, base-URL-portable — is now first-class context inside any MCP-capable AI assistant. Developers can ask in English; the model returns correct integration code with the right host, auth, and request body shape.",
+  },
+
   "website-builder-saas": {
     slug: "website-builder-saas",
     title: "Website Builder SaaS",
@@ -371,17 +422,21 @@ export const caseStudies: Record<string, CaseStudy> = {
   "deal-on-property": {
     slug: "deal-on-property",
     title: "Deal On Property — Developer Build",
-    subtitle: "A production real estate marketplace targeting the Indian market — Next.js 16 / React 19, server-first architecture, deep SEO surface, geo-aware routing, owner/agent workflows.",
+    subtitle: "A production real estate marketplace I built solo as the developer — Next.js 16 / React 19, server-first architecture, deep SEO surface, geo-aware routing, owner/agent workflows, companion Android app.",
     metaDescription:
-      "Case study: dealonproperty.com — a real estate marketplace built solo on Next.js 16 + React 19. Server components, MapLibre, HLS video, geo-aware city detection, IndexNow + Google Indexing API, multi-tier sitemap. Targets 99acres / Magicbricks / Housing.com.",
+      "Case study: dealonproperty.com — a real estate marketplace I built solo as the developer on Next.js 16 + React 19. Server components, MapLibre, HLS video, geo-aware city detection, IndexNow + Google Indexing API, multi-tier sitemap, companion Android app. Targets 99acres / Magicbricks / Housing.com.",
     hero: {
       role: "Lead Developer · Architect · Solo Engineer",
       timeline: "2025 – Present",
       teamSize: "1 (solo, AI-augmented)",
-      status: "Production · Live at dealonproperty.com",
+      status: "Production · Web + Android live",
+    },
+    links: {
+      web: "https://www.dealonproperty.com/",
+      android: "https://play.google.com/store/apps/details?id=com.dealonproperty.mobile",
     },
     overview: [
-      "A real-estate marketplace I built as the solo developer — a platform going head-to-head with 99acres, Magicbricks, and Housing.com in the Indian market. Owners and agents list properties; buyers and renters discover, save, compare, and inquire.",
+      "A real-estate marketplace I built solo as the developer — a platform going head-to-head with 99acres, Magicbricks, and Housing.com in the Indian market. Owners and agents list properties; buyers and renters discover, save, compare, and inquire. Web at dealonproperty.com, companion Android app live on Google Play.",
       "Server-first architecture on the latest Next.js 16 / React 19. Every route is RSC by default — the property detail page, search results, city landing pages, and blog all render on the server with structured data baked in. Auth-gated dashboards (my-properties, leads, favorites, billing) handle the personalized surface.",
       "The competitive bet is SEO: every city + locality + project becomes its own indexable surface, instantly notified to Google + Bing + Yandex via IndexNow on every listing approval — so a new listing appears in search the same day it's published.",
     ],

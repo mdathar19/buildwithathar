@@ -1,0 +1,126 @@
+---
+title: "Don't replace your rule engine. Replace the menu in front of it."
+summary: "Teams ripping out deterministic systems for LLMs are about to regret it. The right move is older and weirder: keep the rules, swap the doorway."
+metaDescription: "Why generative AI doesn't replace business rules — it replaces the menu users hate. A practical take on tool-calling, hybrid architectures, and where the LLM actually belongs in your stack."
+publishedAt: "2026-06-20T10:00:00Z"
+readingMinutes: 5
+tags:
+  - ai
+  - architecture
+  - tool-calling
+  - rag
+---
+
+For thirty years, customer service was a menu. _Press 1 for English. Press 2 to block your card. Press 3 for your last transaction._ Even when your card had been stolen and was bleeding cash, you pressed 2. Then 3. Then 0 to scream at a human. We didn't fix this when we built smarter menus. We fixed it when we built a translator.
+
+The interesting move in AI right now isn't *"replace the rule engine with the LLM"* — that's a category error you can lose your job over. It's *"keep the rule engine, swap the menu for a conversation."*
+
+## 1. The bug was never the rules. It was the doorway.
+
+Your IVR business logic is correct. Block card. Fetch last transaction. Transfer to agent. These are deterministic, audited, traceable — and they should stay that way. None of that needs an LLM.
+
+What needs an LLM is the **doorway** — turning *"my card was stolen and I need to know if anything moved on it"* into three function calls against systems you already trust.
+
+<FlipCard
+  front="AI is replacing business logic"
+  back="AI is replacing the menu in front of business logic. The logic underneath barely changes."
+/>
+
+<TldrReveal label="TL;DR — section 1">
+  Don't rewrite the engine. Wrap a translator around it. The rules are fine; the way people reach them isn't.
+</TldrReveal>
+
+## 2. The LLM is a dispatcher, not a database.
+
+Tool-calling flipped the architecture. The model doesn't *know* your last transaction — it knows it should call `getLastTransaction(userId)` and wait for the result. Your APIs stay canonical. The model becomes the routing layer.
+
+This is the part most teams get backwards. They try to stuff knowledge into the prompt, fine-tune the model on their schema, build a RAG pipeline that re-derives data the database already owns. Stop. Your database is the source of truth. The LLM's job is to figure out *which question is being asked* and *which function answers it*.
+
+<DiffSlider
+  id="ivr-to-tools"
+  beforeLabel="IVR menu (old doorway)"
+  afterLabel="Tool schemas (new doorway)"
+  language="ts"
+  before={`// IVR routing
+switch (digit) {
+  case "1": setLanguage("en"); break;
+  case "2": blockCard(userId); break;
+  case "3": showLast(userId); break;
+  case "0": transferToAgent(); break;
+  default:  replayMenu();
+}`}
+  after={`// Tool schemas — LLM decides
+const tools = [
+  { name: "blockCard",
+    params: { userId: "string" } },
+  { name: "getLastTransaction",
+    params: { userId: "string" } },
+  { name: "transferToAgent",
+    params: { reason: "string" } },
+];
+// model picks tools + args from
+// "my card was stolen — what moved?"`}
+/>
+
+<TldrReveal label="TL;DR — section 2">
+  Promote your APIs. Demote the menu. The model orchestrates; your code still owns the truth.
+</TldrReveal>
+
+## A quick gut-check before you scale this
+
+The math on hybrid systems isn't obvious. Most teams either over-route to the LLM (expensive) or under-route (defeats the point).
+
+<ParamTinker
+  id="cost-model"
+  label="What does the hybrid actually cost at scale?"
+  min={1}
+  max={500}
+  step={5}
+  initial={50}
+  unit="k calls/day"
+  formula="v * 0.4 * 0.02 + v * 0.6 * 0.0005"
+  template="At {v}k calls/day with 40% routed to the LLM (~$0.02/call) and 60% on deterministic paths (~$0.0005/call), you spend roughly ${result} per day."
+  hint="Adjust the slider. The 40/60 split is the lever most teams tune."
+/>
+
+## 3. Always wire the kill switch.
+
+The LLM will hallucinate, mis-route, or pick the wrong tool. Not often. Not catastrophically. But unpredictably enough that production needs a fallback.
+
+Every system I've shipped with an LLM in the loop has the same escape valve: **low confidence → fall back to the deterministic path**. The model says "block their card" with 80% confidence — fine, execute. Says "refund last three charges" with 45% confidence — don't execute, hand to a human or replay a small menu.
+
+<QuizCard
+  id="kill-switch"
+  question="Customer types: 'block my card and refund last 3 charges'. The model returns blockCard at 0.82 confidence and refundCharges at 0.45 confidence. Best move?"
+  options={[
+    { key: "a", label: "Execute both — the model picked them" },
+    { key: "b", label: "Execute blockCard, queue refund for human review", correct: true },
+    { key: "c", label: "Refuse both and replay the menu" },
+    { key: "d", label: "Ask the model to retry with more context" }
+  ]}
+  explain="A deterministic threshold per tool is the cheapest, most legible safety net you can build. High-confidence destructive actions can execute; low-confidence destructive actions hand off to a human. 'Retry the model' adds latency and cost without changing what's actually uncertain — the user's intent."
+/>
+
+<TldrReveal label="TL;DR — section 3">
+  Treat the LLM like any other unreliable service: timeout, retry budget, fallback path. Confidence thresholds per tool are the real product surface.
+</TldrReveal>
+
+## So what's the actual shape?
+
+Deterministic systems do what they've always done — execute business rules predictably, leave an audit trail, fail in legible ways. The LLM sits in front, listens to messy human intent, picks tools, and gets out of the way. When it's unsure, the deterministic path takes over.
+
+<InlinePoll
+  slug="deterministic-meets-generative"
+  id="approach"
+  question="In your last AI build, which mistake did you make?"
+  options={[
+    { key: "all-llm", label: "Over-routed to the LLM — slow + expensive" },
+    { key: "no-llm", label: "Under-used it — still felt like a menu" },
+    { key: "no-fallback", label: "Forgot the kill switch — got bitten" },
+    { key: "balanced", label: "Got the balance right (humble brag)" }
+  ]}
+/>
+
+It's not that AI replaced the rule engine. It's that we finally have something that can stand at the door and understand what people are actually asking for — then pass them through to the system that already knew the answer.
+
+The menu was never the answer. It was the apology for not having one.
