@@ -191,7 +191,20 @@ async function sendAdminEmail(p: {
   reviewUrl: string;
 }) {
   const mailer = getMailer();
-  if (!mailer || !process.env.EMAIL_FROM || !process.env.EMAIL_TO) return;
+  if (!mailer) {
+    console.error(
+      "[insight/comment] mailer not configured — missing one of EMAIL_HOST / EMAIL_USER / EMAIL_PASSWORD"
+    );
+    return;
+  }
+  if (!process.env.EMAIL_FROM) {
+    console.error("[insight/comment] EMAIL_FROM env var not set");
+    return;
+  }
+  if (!process.env.EMAIL_TO) {
+    console.error("[insight/comment] EMAIL_TO env var not set");
+    return;
+  }
 
   const mapsLink =
     p.geo.lat && p.geo.lat !== "—" && p.geo.lon && p.geo.lon !== "—"
@@ -254,15 +267,21 @@ async function sendAdminEmail(p: {
 </body></html>`;
 
   try {
-    await mailer.sendMail({
+    const info = await mailer.sendMail({
       from: process.env.EMAIL_FROM,
       to: process.env.EMAIL_TO,
       subject,
       text,
       html,
     });
+    console.log(
+      `[insight/comment] mail sent · id=${info?.messageId} · to=${process.env.EMAIL_TO} · slug=${p.slug}`
+    );
   } catch (err) {
-    console.error("[insight/comment] mail send failed:", (err as Error)?.message);
+    const e = err as Error & { code?: string; response?: string };
+    console.error(
+      `[insight/comment] mail send failed · code=${e?.code} · msg=${e?.message} · resp=${e?.response}`
+    );
   }
 }
 
