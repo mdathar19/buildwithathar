@@ -1,0 +1,145 @@
+---
+title: "Stop sending your LLM 'call me.' texts."
+summary: "Every bad prompt is a 'call me.' text — no context, no urgency, no clue what's on fire. Prompt engineering is mostly: please stop making everyone guess."
+metaDescription: "Prompt engineering, explained through the cursed 'call me.' text. Zero-shot, few-shot, role prompting, prompt chaining — what each one fixes, when to use it, and the real cost of more examples."
+publishedAt: "2026-06-23T10:00:00Z"
+readingMinutes: 5
+tags:
+  - prompt-engineering
+  - llm
+  - ai
+  - genz
+---
+
+Your boss texts you: **"call me."**
+
+That's it. No context. No urgency level. No clue what's coming. Your brain immediately runs 500 simulations: _got fired, broke prod, deployed on Friday, parents calling about something serious, the cat._ You sit there for forty seconds pretending to read Slack while picking a vibe.
+
+Now imagine you're an LLM and someone sends you: **"fix this."**
+
+Same panic. Same 500-branch decision tree. Same shrug of an answer five seconds later.
+
+A surprising amount of prompt engineering boils down to one line: _please stop making everyone guess._ The named techniques — zero-shot, few-shot, role, chain — are just five flavors of "here's the context you needed."
+
+## 1. Zero-shot is the "call me." of prompts.
+
+You wrote three words and hit enter. The model now picks a path from training-distribution priors. It might nail it. It might confidently misread you. You will not know which one until the response is in front of you.
+
+Zero-shot isn't bad. It's the right tool when the task is famous (summarize, translate, classify) and the model has seen ten thousand examples of exactly that shape. It's the wrong tool the moment your task has any flavor — your tone, your schema, your edge case.
+
+<FlipCard
+  front="Zero-shot prompting"
+  back="The 'call me.' text. Works when the task is famous enough that the model can guess your intent. Fails the moment your task has a personality."
+/>
+
+<TldrReveal label="TL;DR — section 1">
+  Zero-shot is fine for famous tasks. Anything with a custom shape needs at least one example, or you're rolling dice.
+</TldrReveal>
+
+## 2. One-shot and few-shot — show, don't describe.
+
+Telling a model _"return clean JSON, no markdown fences, no preamble"_ works about 70% of the time. Showing it one well-formed example works about 95%. Showing it three works about 99%.
+
+This is the part most people skip because it feels lazy. _"I shouldn't have to give examples, the model is smart."_ The model is smart. Your description of "clean JSON" is still ambiguous. The example is not.
+
+<DiffSlider
+  id="zero-vs-fewshot"
+  beforeLabel="Zero-shot (vibes-based)"
+  afterLabel="Few-shot (deterministic)"
+  language="ts"
+  before={`// What most people ship
+const prompt = \`
+Classify this support ticket
+as bug, feature, or billing.
+Return JSON.
+
+Ticket: "\${ticket}"
+\`;
+// returns: \`\`\`json
+// { "category": "Bug Report" } \`\`\`
+// (wrong shape, wrong case, fences)`}
+  after={`// What actually works
+const prompt = \`
+Classify the ticket. Return JSON.
+
+Ticket: "App crashes on login"
+{"category":"bug"}
+
+Ticket: "Add dark mode"
+{"category":"feature"}
+
+Ticket: "Charged twice"
+{"category":"billing"}
+
+Ticket: "\${ticket}"
+\`;
+// returns: {"category":"bug"}`}
+/>
+
+<TldrReveal label="TL;DR — section 2">
+  One good example beats a paragraph of instructions. Three beats one. Diminishing returns kick in around five.
+</TldrReveal>
+
+## But examples aren't free.
+
+Every few-shot example is tokens you pay for on every single call. The math gets ugly faster than people expect — especially when you're at scale and someone else is footing the bill.
+
+<ParamTinker
+  id="fewshot-cost"
+  label="How much do those few-shot examples actually cost?"
+  min={0}
+  max={20}
+  step={1}
+  initial={3}
+  unit="examples"
+  formula="v * 80 * 10000 * 0.003 / 1000"
+  template="Adding {v} few-shot examples (~80 tokens each) across 10,000 calls/day at $0.003 per 1k input tokens costs roughly ${result} extra per day in input tokens alone."
+  hint="The honest number is: pick the smallest example set that hits your quality bar, not the most you can stuff in."
+/>
+
+## 3. Role and chain — staging the room before the conversation.
+
+**Role prompting** is _"you are a senior SRE reviewing this incident report."_ It primes the model to weight different priors — vocabulary, level of detail, what it pushes back on. Doesn't replace good instructions; sharpens them.
+
+**Prompt chaining** is admitting one prompt can't carry the whole task. Step 1: extract the entities. Step 2: classify each one. Step 3: write the summary using only the classified entities. Each step is small, debuggable, and the model isn't holding ten things in its head at once.
+
+<QuizCard
+  id="pick-the-technique"
+  question="You're building a tool that turns a customer's chaotic Slack message into a clean Jira ticket with the right project, labels, priority, and a tidy summary. Which approach is the best starting point?"
+  options={[
+    { key: "a", label: "One huge zero-shot prompt with every rule listed" },
+    { key: "b", label: "Few-shot with 12 example tickets, single call" },
+    { key: "c", label: "Chain: extract → classify → format. Few-shot the classify step.", correct: true },
+    { key: "d", label: "Fine-tune a model on your historical tickets" }
+  ]}
+  explain="Chaining wins because the steps fail differently and need to be debugged separately. The extractor failing is a different bug than the classifier picking the wrong project. One giant prompt hides which step went wrong, and fine-tuning is a six-month commitment for a problem prompt engineering solves in an afternoon."
+/>
+
+<TldrReveal label="TL;DR — section 3">
+  Role primes; chain decomposes. Use role to set the lens, chain to break a hard task into small ones you can actually debug.
+</TldrReveal>
+
+## So what's the real shape?
+
+Prompt engineering is not a mystical skill. It's removing ambiguity. The named techniques are five different ways to do that:
+
+- **Zero-shot** — trust the model's priors. Cheap, fast, lossy.
+- **One-shot / few-shot** — show the exact output you want. Expensive but precise.
+- **Role** — set the lens before the question. Free, underused.
+- **Chaining** — break a hard task into small ones with clear handoffs. Slower, debuggable.
+
+Pick by how famous the task is, how much you'll pay per call, and how much you can afford to be wrong.
+
+<InlinePoll
+  slug="stop-sending-llm-call-me-texts"
+  id="abuse"
+  question="Which technique do you abuse the most?"
+  options={[
+    { key: "zero", label: "Zero-shot — I'm a vibes engineer" },
+    { key: "few", label: "Few-shot — stuffing 14 examples in" },
+    { key: "role", label: "Role — every prompt starts with 'you are'" },
+    { key: "chain", label: "Chains — I have 9 LLM calls per request" }
+  ]}
+/>
+
+The shortest message that ever caused you unnecessary panic is also the prompt you keep sending your LLM. _Please call me back. With context this time._
