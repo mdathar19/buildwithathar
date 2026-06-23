@@ -1,0 +1,144 @@
+---
+title: "Maybe let Kevin check it before we embarrass ourselves."
+summary: "Human-in-the-loop is the boring, expensive part of AI that nobody puts on the landing page. Also the part that keeps your company off the news."
+metaDescription: "Human-in-the-Loop (HITL), demystified. Why the most 'autonomous' AI products quietly employ thousands of humans, what it costs, and the lawsuits and shutdowns that prove what happens when you skip it."
+publishedAt: "2026-06-23T14:00:00Z"
+readingMinutes: 6
+topic: gen-ai
+tags:
+  - hitl
+  - ai-safety
+  - ml-ops
+  - genz
+---
+
+The AI says: _"I have reviewed 12,487 documents and reached a conclusion."_
+
+Kevin says: _"you read the wrong PDF."_
+
+That entire exchange is Human-in-the-Loop. Fancy term. Boring practice. Saves your company.
+
+The version of AI that ships in production looks nothing like the demo. The demo is a confident model with a microphone. Production is the model, plus Kevin, plus three layers of review, plus a logging table called `flagged_for_review_pls_god`. The companies you assume are pure-AI are almost always paying humans to clean up behind the scenes — and the ones that don't, eventually end up in court.
+
+## 1. The "AI product" is almost always a human supervising a model.
+
+Google doesn't run search on pure ranking math. They employ **roughly 16,000 search quality raters** through contractors like RaterLabs and Appen, scoring results against a 168-page document called the [Search Quality Rater Guidelines](https://services.google.com/fh/files/misc/hsw-sqrg.pdf). In **September 2025** they added the first concrete examples specifically for evaluating AI Overviews. The most successful search company on Earth still believes the right number of humans in the loop is _sixteen thousand_.
+
+Amazon's "Just Walk Out" grocery tech — the one that was supposed to let you grab items and leave — relied on **~1,000 workers in India manually reviewing transactions**. The target was 50 reviewed per 1,000 sales. Reality was closer to 700 per 1,000. The story broke in April 2024. Amazon killed the product shortly after.
+
+<FlipCard
+  front="Pure AI"
+  back="Pure AI doesn't exist at scale. Even Google Search ships with ~16,000 humans grading results. The 'autonomous' part is mostly marketing."
+/>
+
+<TldrReveal label="TL;DR — section 1">
+  Most "AI products" are HITL pipelines with the humans hidden behind a logo. The ones pretending otherwise either burn cash quietly or get exposed loudly.
+</TldrReveal>
+
+## 2. Skip the human, meet the lawyer.
+
+**Air Canada, February 14, 2024.** A bereavement-fare chatbot invented a refund policy that didn't exist. A customer relied on it, bought a ticket, and asked for the refund. Air Canada refused. The customer took them to BC's Civil Resolution Tribunal. Air Canada's defense — and this is real — was that the chatbot was "a separate legal entity responsible for its own actions." The tribunal disagreed. Air Canada paid C$812.02 and a credibility tax much larger than that.
+
+**Microsoft Tay, March 23, 2016.** Shipped at 8am. Shut down 16 hours later after tweeting **over 95,000 messages** including Holocaust denial. The mechanism wasn't even sophisticated — trolls discovered Tay had a "repeat after me" function. There was no human moderation in the loop. Just a model and an open mic.
+
+These are not edge cases. These are what happens when the loop is closed too tightly around the model and Kevin is on PTO.
+
+<DiffSlider
+  id="loop-vs-no-loop"
+  beforeLabel="The shipped demo (no loop)"
+  afterLabel="The version that survives (HITL)"
+  language="ts"
+  before={`// "Look how clean this is"
+async function reply(msg: string) {
+  const out = await llm.generate(msg);
+  await db.respond(out);
+  return out; // ship it
+}
+
+// Failure mode: model invents
+// a refund policy. You get sued.`}
+  after={`// What's actually in production
+async function reply(msg: string) {
+  const out = await llm.generate(msg);
+
+  if (isHighStakes(msg) ||
+      confidence(out) < 0.85) {
+    await queue.forReview(msg, out);
+    return TEMPLATES.willGetBack;
+  }
+
+  await db.respond(out);
+  return out;
+}
+
+// Failure mode: Kevin is slow.
+// Acceptable.`}
+/>
+
+<TldrReveal label="TL;DR — section 2">
+  Air Canada lost in court because nobody read what the bot said. Microsoft lost a brand because nobody watched what the bot learned. The loop isn't optional — it's the legal moat.
+</TldrReveal>
+
+## The math nobody puts on the deck
+
+Before you decide HITL is "too expensive," do the actual math. Labeling vendors are public about pricing now.
+
+<ParamTinker
+  id="hitl-cost"
+  label="What does Kevin-at-scale actually cost per day?"
+  min={1}
+  max={200}
+  step={1}
+  initial={20}
+  unit="k flagged items/day"
+  formula="v * 1000 * 0.15"
+  template="At {v}k items routed to human review per day, at $0.15/label (typical Surge AI / Scale AI mid-tier rate), you spend roughly ${result} per day on HITL. Compare against the legal cost of one Air Canada-style chatbot ruling."
+  hint="Surge AI runs $0.10–$0.50 per expert label. Scale AI's average enterprise contract is ~$93k. HITL is a line item, not a deal-breaker."
+/>
+
+## 3. Pick which decisions humans actually own.
+
+The mistake teams make is binary: either "humans review everything" (expensive, slow, demoralizing) or "model decides everything" (Tay). The real design is gradient. Decisions get routed by **what the model is sure of** and **what it costs to be wrong**.
+
+- **Low stakes + high confidence** → ship it. (Categorize support ticket.)
+- **Low stakes + low confidence** → ship it but log. (Suggest a product.)
+- **High stakes + high confidence** → human reviews after. (Auto-refund under $50.)
+- **High stakes + low confidence** → human reviews before. (Refund over $500. Anything that creates a legal obligation.)
+
+That's the entire framework. Two axes, four quadrants, one Kevin.
+
+<QuizCard
+  id="route-correctly"
+  question="Your AI moderation model flags a user's comment as 'likely hate speech' at 0.62 confidence. The platform's policy is permanent ban on confirmed hate speech. What ships?"
+  options={[
+    { key: "a", label: "Auto-ban. The model said so." },
+    { key: "b", label: "Auto-allow. Below 0.85 — call it noise." },
+    { key: "c", label: "Hide pending human review, notify the user it's under review.", correct: true },
+    { key: "d", label: "Send the user a model-written explanation of why they were banned." }
+  ]}
+  explain="High stakes (permanent ban) + medium confidence (0.62) is the exact quadrant that demands a human. Auto-ban is how you get a defamation suit. Auto-allow is how you become a hate-speech platform. Hiding pending review is the only move that protects everyone — and the user notification is the courtesy that prevents the inevitable Twitter screenshot."
+/>
+
+<TldrReveal label="TL;DR — section 3">
+  Don't ask 'should there be a human.' Ask 'when, for which class of decision, and how fast.' The HITL design IS the product.
+</TldrReveal>
+
+## So what's the real shape?
+
+Human-in-the-loop is not a fallback. It is not a temporary scaffolding you remove when the model "gets good enough." It is the architecture pattern that makes shipping a probabilistic system to humans legally and ethically tractable.
+
+The teams who internalize this build slower, ship more, and end up on stage at conferences. The teams who don't end up as case studies in legal blogs.
+
+<InlinePoll
+  slug="human-in-the-loop-let-kevin-check"
+  id="who-is-kevin"
+  question="In your current AI build, who is Kevin?"
+  options={[
+    { key: "me", label: "It's me. I am Kevin. I review every response." },
+    { key: "team", label: "We have a review queue with rotating reviewers." },
+    { key: "vendor", label: "We pay Scale / Surge / Mechanical Turk." },
+    { key: "nobody", label: "There is no Kevin. We are the Air Canada cautionary tale in waiting." }
+  ]}
+/>
+
+The AI says it reviewed 12,487 documents. Kevin says it read the wrong PDF. Kevin is right. Pay Kevin.

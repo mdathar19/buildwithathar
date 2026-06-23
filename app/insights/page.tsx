@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getAllInsights } from "@/lib/insights";
+import { getAllInsights, getAllTopics, getTopicMeta } from "@/lib/insights";
 
 const SITE_URL = "https://buildwithathar.com";
 
@@ -60,8 +60,19 @@ function fmtDate(iso: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-export default function InsightsIndex() {
-  const insights = getAllInsights();
+type PageProps = {
+  searchParams?: { topic?: string };
+};
+
+export default function InsightsIndex({ searchParams }: PageProps) {
+  const all = getAllInsights();
+  const topics = getAllTopics();
+  const activeTopic = searchParams?.topic?.trim() || null;
+  const activeMeta = activeTopic ? getTopicMeta(activeTopic) : null;
+
+  const posts = activeTopic
+    ? all.filter((p) => (p.topic || "other") === activeTopic)
+    : all;
 
   return (
     <div className="insights-index">
@@ -82,35 +93,101 @@ export default function InsightsIndex() {
         </p>
       </header>
 
-      {insights.length === 0 ? (
+      {topics.length > 0 && (
+        <section className="insights-topics" aria-label="Topics">
+          <div className="insights-topics-head">
+            <span className="insights-topics-label">// TOPICS</span>
+            <span className="insights-topics-count">{topics.length}</span>
+          </div>
+          <div className="insights-topics-rail">
+            <Link
+              href="/insights"
+              className="insights-topic-card"
+              data-active={!activeTopic}
+            >
+              <div className="insights-topic-key">// all</div>
+              <div className="insights-topic-name">Everything</div>
+              <div className="insights-topic-tag">Every post, newest first.</div>
+              <div className="insights-topic-foot">
+                <span className="insights-topic-count">{all.length} posts</span>
+              </div>
+            </Link>
+
+            {topics.map((t) => (
+              <Link
+                key={t.key}
+                href={`/insights?topic=${encodeURIComponent(t.key)}`}
+                className="insights-topic-card"
+                data-active={activeTopic === t.key}
+              >
+                <div className="insights-topic-key">// {t.key}</div>
+                <div className="insights-topic-name">{t.label}</div>
+                <div className="insights-topic-tag">{t.tagline}</div>
+                <div className="insights-topic-foot">
+                  <span className="insights-topic-count">
+                    {t.count} {t.count === 1 ? "post" : "posts"}
+                  </span>
+                  <span className="insights-topic-latest" title={t.latestTitle}>
+                    latest · {fmtDate(t.latestDate)}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {activeMeta && (
+        <div className="insights-filter-bar">
+          <span className="insights-filter-status">
+            Showing{" "}
+            <strong className="insights-filter-name">{activeMeta.label}</strong>
+            <span className="insights-filter-count"> · {posts.length} {posts.length === 1 ? "post" : "posts"}</span>
+          </span>
+          <Link href="/insights" className="insights-filter-clear">
+            clear filter ×
+          </Link>
+        </div>
+      )}
+
+      {posts.length === 0 ? (
         <div className="insights-empty">
-          <div className="insights-empty-tag">// no posts yet</div>
-          <p>First one lands soon.</p>
+          <div className="insights-empty-tag">// no posts in this topic yet</div>
+          <p>
+            Try{" "}
+            <Link href="/insights" className="insights-empty-back">all insights</Link>{" "}
+            instead.
+          </p>
         </div>
       ) : (
         <ul className="insights-grid">
-          {insights.map((post, i) => (
-            <li key={post.slug} className="insights-card" data-feat={i === 0}>
-              <Link href={`/insights/${post.slug}`} className="insights-card-link">
-                <div className="insights-card-meta">
-                  <span className="insights-card-date">{fmtDate(post.publishedAt)}</span>
-                  {post.readingMinutes && (
-                    <span className="insights-card-read">{post.readingMinutes} min</span>
-                  )}
-                </div>
-                <h2 className="insights-card-title">{post.title}</h2>
-                <p className="insights-card-sum">{post.summary}</p>
-                {post.tags.length > 0 && (
-                  <div className="insights-card-tags">
-                    {post.tags.slice(0, 4).map((t) => (
-                      <span key={t} className="insights-card-tag">#{t}</span>
-                    ))}
+          {posts.map((post, i) => {
+            const topicKey = post.topic || "other";
+            const topicMeta = getTopicMeta(topicKey);
+            return (
+              <li key={post.slug} className="insights-card" data-feat={!activeTopic && i === 0}>
+                <Link href={`/insights/${post.slug}`} className="insights-card-link">
+                  <div className="insights-card-meta">
+                    <span className="insights-card-date">{fmtDate(post.publishedAt)}</span>
+                    {post.readingMinutes && (
+                      <span className="insights-card-read">{post.readingMinutes} min</span>
+                    )}
+                    <span className="insights-card-topic">· {topicMeta.label}</span>
                   </div>
-                )}
-                <div className="insights-card-cta">read →</div>
-              </Link>
-            </li>
-          ))}
+                  <h2 className="insights-card-title">{post.title}</h2>
+                  <p className="insights-card-sum">{post.summary}</p>
+                  {post.tags.length > 0 && (
+                    <div className="insights-card-tags">
+                      {post.tags.slice(0, 4).map((t) => (
+                        <span key={t} className="insights-card-tag">#{t}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="insights-card-cta">read →</div>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
