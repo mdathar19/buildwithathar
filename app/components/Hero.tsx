@@ -1,5 +1,5 @@
 import Link from "next/link";
-import NodeGraph from "./NodeGraph";
+import NodeTopology3D from "./NodeTopology3D";
 import HeroCTA from "./HeroCTA";
 import { getAllInsights } from "@/lib/insights";
 
@@ -63,7 +63,7 @@ export default function Hero() {
             <HeroCTA />
           </div>
 
-          <NodeGraph />
+          <NodeTopology3D />
         </div>
       </div>
 

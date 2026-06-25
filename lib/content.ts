@@ -335,14 +335,14 @@ export const education = {
 };
 
 export const nodes = [
-  { label: "WEBSITE_BUILDER", short: "BUILDER", flagship: true, angle: -90 },
-  { label: "PAYBITO_MCP", short: "MCP", flagship: true, angle: -54 },
-  { label: "BITOLINK_RTC", short: "BITOLINK", angle: -18 },
-  { label: "RAG_PLATFORM", short: "RAG", angle: 18 },
-  { label: "WHIZZO_AI", short: "WHIZZO", angle: 54 },
-  { label: "RECAPTCHA", short: "CAPTCHA", angle: 90 },
-  { label: "FEEDBACK_CENTRAL", short: "FEEDBACK", angle: 126 },
-  { label: "FIN_P&L", short: "FIN_P&L", angle: 162 },
-  { label: "HRMS", short: "HRMS", angle: 198 },
-  { label: "CRM", short: "CRM", angle: 234 },
+  { label: "WEBSITE_BUILDER", short: "BUILDER", flagship: true, angle: -90, slug: "website-builder-saas" },
+  { label: "PAYBITO_MCP", short: "MCP", flagship: true, angle: -54, slug: "paybito-mcp" },
+  { label: "BITOLINK_RTC", short: "BITOLINK", angle: -18, slug: "bitolink" },
+  { label: "RAG_PLATFORM", short: "RAG", angle: 18, slug: "rag-chatbot" },
+  { label: "WHIZZO_AI", short: "WHIZZO", angle: 54, slug: "ai-assistant-chatbot" },
+  { label: "RECAPTCHA", short: "CAPTCHA", angle: 90, slug: "captcha-service" },
+  { label: "FEEDBACK_CENTRAL", short: "FEEDBACK", angle: 126, slug: "feedback-central" },
+  { label: "FIN_P&L", short: "FIN_P&L", angle: 162, slug: "financial-reporting" },
+  { label: "HRMS", short: "HRMS", angle: 198, slug: "hrms" },
+  { label: "CRM", short: "CRM", angle: 234, slug: "crm" },
 ];
