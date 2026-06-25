@@ -1,0 +1,144 @@
+---
+title: "Calling ChatGPT 'AI' is like calling your dog 'an animal'."
+summary: "AI, ML, deep learning, Gen AI, foundation models, LLMs — people use them like synonyms. They're nested dolls. ChatGPT is the youngest, smallest one, sitting several layers down inside a 70-year-old field."
+metaDescription: "AI vs ML vs deep learning vs generative AI vs foundation models vs LLMs — the nested hierarchy, explained without the hype. The labeled-vs-unlabeled boundary that actually matters, the 100,000x training-cost cliff, and why 'we use AI' is usually marketing (with the SEC fines to prove it)."
+publishedAt: "2026-06-25T10:00:00Z"
+readingMinutes: 6
+topic: gen-ai
+tags:
+  - ai-fundamentals
+  - machine-learning
+  - foundation-models
+  - genz
+---
+
+Google has a diagram that ends a hundred LinkedIn arguments: a big circle labeled **AI**, a smaller circle inside it labeled **ML**, and a bright dot deep inside that labeled **Gen AI**. Three circles, one inside the next.
+
+Here's what it's quietly telling you: these words are not synonyms. They're nested dolls.
+
+So when someone says _"ChatGPT is AI,"_ they're technically right and almost completely unhelpful — the same way "your dog is an animal" is right. Sure. It's also a mammal, a vertebrate, a Labrador, and Steve. You skipped about five levels of precision to land on the vaguest word available.
+
+That vagueness isn't harmless. It's the exact gap marketers slip through to slap "AI" on a spreadsheet — and the gap regulators are now writing fines into. Let's un-blur the circles.
+
+## 1. The words are nested, not interchangeable.
+
+Read the diagram from the outside in. **AI** is the whole ambition — machines doing things that used to need a human. **Machine learning** is one way to get there: instead of hand-coding rules, you let a machine learn patterns from data. **Deep learning** is one _kind_ of ML — neural networks with many layers. **Generative AI** is what you get when you point that at _making new content_ instead of just classifying it. **Foundation models** are the giant, broadly-trained models underneath. And an **LLM** is one species of foundation model — the one tuned for language.
+
+So the real lineage is: AI ⊃ ML ⊃ deep learning ⊃ foundation models ⊃ LLMs ⊃ the chatbot in your tab. Every arrow is "a more specific kind of." ChatGPT isn't "an AI." It's a great-great-grandchild of the word.
+
+And it's _young_. "AI" was coined at the [Dartmouth workshop in 1956](https://home.dartmouth.edu/about/artificial-intelligence-ai-coined-dartmouth). The transformer that makes modern chatbots possible — ["Attention Is All You Need"](https://arxiv.org/abs/1706.03762) — is from **2017**. The term "foundation model" didn't exist until [Stanford coined it in **August 2021**](https://arxiv.org/abs/2108.07258). ChatGPT launched **November 2022**. The thing everyone now means by "AI" is the thinnest, newest slice of a field older than your parents.
+
+<FlipCard
+  front="ChatGPT is AI"
+  back="True the way a Labrador is 'an animal.' AI ⊃ ML ⊃ deep learning ⊃ foundation models ⊃ LLMs ⊃ ChatGPT. It's the youngest, smallest doll — five levels down from the word people keep using for it."
+/>
+
+<TldrReveal label="TL;DR — section 1">
+  These aren't synonyms, they're Russian dolls. Each term is a more specific kind of the one before it. "AI" is the outer shell; an LLM is way down inside.
+</TldrReveal>
+
+## 2. The boundary that actually matters: who labels the data.
+
+Most people memorize the circles and still miss the line that actually separates old AI from the new wave. It's not "neural networks." It's **labels.**
+
+Classic machine learning is supervised: a human labels thousands of examples — _this email is spam, this one isn't_ — and the model learns to copy that judgment. The bottleneck is people. Someone has to sit and tag the data, by hand, forever.
+
+Foundation models broke that. Stanford's definition is precise: a foundation model is trained on broad data _"generally using self-supervision at scale."_ Translation: nobody labels anything. You feed it the raw internet and make it play fill-in-the-blank — predict the next word, over and over — until it has absorbed grammar, facts, and reasoning as a side effect. Unlabeled data is basically free and basically infinite. _That's_ the unlock. Not the network. The fact that you fired the labelers.
+
+<DiffSlider
+  id="labeled-vs-self-supervised"
+  beforeLabel="Old ML (humans label everything)"
+  afterLabel="Foundation model (labels itself)"
+  language="ts"
+  before={`// Supervised ML: humans tag the data
+const trainingData = [
+  { text: "win a free iphone now", label: "spam" },
+  { text: "lunch at 1pm?",         label: "ham" },
+  { text: "claim your prize!!!",   label: "spam" },
+  // ...repeat 50,000 times, by hand
+];
+
+model.train(trainingData);
+// bottleneck = humans tagging examples`}
+  after={`// Foundation model: self-supervised
+const trainingData = theWholeInternet; // unlabeled
+
+// task: just predict the next word
+//   "lunch at 1___"  -> "pm"
+//   "the capital of France is ___" -> "Paris"
+
+model.pretrain(trainingData);
+// it learns grammar, facts, reasoning
+// as a SIDE EFFECT. no labelers needed.`}
+/>
+
+<TldrReveal label="TL;DR — section 2">
+  Old ML needed humans to label every example. Foundation models train themselves on raw, unlabeled data by predicting the next word. Killing the labeling bottleneck is the whole revolution.
+</TldrReveal>
+
+## The cost cliff nobody puts in the explainer.
+
+There's a reason the company that trains the foundation model and the company that "has an AI feature" are almost never the same company. Training one of these from scratch fell off a financial cliff. Drag the slider and watch the bill.
+
+<ParamTinker
+  id="foundation-cost"
+  label="What does it cost to train your own foundation model?"
+  min={1}
+  max={2000}
+  step={1}
+  initial={175}
+  unit="B params"
+  formula="v * 0.026"
+  template="A {v}-billion-parameter foundation model costs very roughly ${result} million in compute to train from scratch — order of magnitude, not a quote. This is why ~nobody trains one. You rent the foundation (prompt it, fine-tune it, wrap it); you don't pour it."
+  hint="Public estimates (Stanford AI Index 2024, via Epoch AI): the 2017 transformer cost ~$900 to train; GPT-4 ~$78M; Gemini Ultra ~$191M — roughly a 100,000× jump in six years. Slide to 175 (GPT-3's size) and you land near Lambda Labs' ~$4.6M estimate. All figures are outside estimates, not audited."
+/>
+
+## 3. "We use AI" is usually a marketing sentence, not an engineering one.
+
+Once you know the hierarchy and the cost cliff, the pitch decks read differently. When a seed-stage startup with no research team says _"powered by our proprietary AI,"_ the honest translation is almost always: _a prompt and an API call to someone else's foundation model, with a nice UI on top._ Which is a fine business! It's just not "their AI."
+
+This is common enough that regulators put a name and a price on it. On **March 18, 2024**, the SEC brought its [first "AI washing" enforcement actions](https://www.sec.gov/newsroom/press-releases/2024-36), fining two investment advisers — Delphia and Global Predictions — a combined **$400,000** for overstating their AI. The Enforcement Division's Gurbir Grewal put it bluntly: if you're rushing to claim you use AI to capitalize on the hype, _"stop."_
+
+There's also the inverse, the "AI effect": the moment a technique actually works — spam filters, GPS routing, autocomplete — we stop calling it AI and call it "software." So "AI" stays stuck as the label for whatever doesn't quite work yet, which is a weird thing to build your whole brand on.
+
+<QuizCard
+  id="proprietary-ai"
+  question="A seed-stage startup's deck says 'powered by our proprietary AI.' No ML researchers on the team, shipped in 8 weeks. What's the most likely reality?"
+  options={[
+    { key: "a", label: "They trained their own foundation model from scratch." },
+    { key: "b", label: "A prompt + an API call to someone else's foundation model, with good UX.", correct: true },
+    { key: "c", label: "Deep learning trained on their private data from zero." },
+    { key: "d", label: "It's quietly AGI and they're being modest." }
+  ]}
+  explain="Training a real foundation model costs tens to hundreds of millions and takes a research org and years (see the slider above). 'Proprietary AI' in an 8-week seed product almost always means clever prompting over a rented model like GPT, Claude, or Gemini. That's a legitimate way to build — but it's not 'their AI,' and the gap between the claim and the truth is exactly what got Delphia and Global Predictions fined $400K."
+/>
+
+<TldrReveal label="TL;DR — section 3">
+  Most 'AI products' are API calls to a foundation model someone else paid $100M to train. That's fine — until the marketing claims otherwise. The SEC has started fining the difference.
+</TldrReveal>
+
+## So what's the actual shape?
+
+The circles aren't trivia. They're a precision tool. Use the smallest word that's actually true:
+
+- **AI** — the 70-year-old ambition. Almost always too vague to be useful in a sentence.
+- **ML** — learning patterns from data instead of hand-coded rules.
+- **Deep learning** — ML with many-layered neural networks.
+- **Foundation model** — one giant model, self-supervised on unlabeled data, adaptable to many tasks.
+- **LLM** — a foundation model specialized for language. This is the thing you're actually using.
+
+Next time someone says "we added AI," ask the only question that matters: _which layer?_ The answer tells you whether they built something, fine-tuned something, or just typed a good prompt.
+
+<InlinePoll
+  slug="chatgpt-is-not-ai-its-a-poodle"
+  id="wrong-word"
+  question="Which term do you use wrong the most?"
+  options={[
+    { key: "ai", label: "I call literally everything 'AI'." },
+    { key: "ml", label: "I say 'ML' when I mean deep learning." },
+    { key: "llm", label: "I thought 'LLM' and 'AI' were the same thing." },
+    { key: "algo", label: "I just call all of it 'the algorithm'." }
+  ]}
+/>
+
+Your dog is an animal. It's also a Labrador named Steve. Both are true; only one tells me anything. ChatGPT is AI — and it's also a language model, which is a foundation model, which is deep learning, which is ML. Say the specific one. It's how people know you actually understand the thing.
