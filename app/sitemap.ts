@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { caseStudySlugs } from "@/lib/case-studies";
-import { getAllInsights } from "@/lib/insights";
+import { getAllInsights, getAllTopics } from "@/lib/insights";
 
 const SITE_URL = "https://buildwithathar.com";
 
@@ -40,6 +40,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  // Topic hubs — real crawlable pages (/insights/topics/<key>), one per topic.
+  const insightsTopics = getAllTopics().map((t) => ({
+    url: `${SITE_URL}/insights/topics/${t.key}`,
+    lastModified: new Date(t.latestDate),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
   const privacy: MetadataRoute.Sitemap[number] = {
     url: `${SITE_URL}/privacy`,
     lastModified,
@@ -47,5 +55,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.3,
   };
 
-  return [root, ...projects, insightsIndex, ...insightsPosts, privacy];
+  return [root, ...projects, insightsIndex, ...insightsTopics, ...insightsPosts, privacy];
 }

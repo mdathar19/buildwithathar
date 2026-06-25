@@ -8,6 +8,8 @@ import QuizCard from "./QuizCard";
 import AnnotatedCode from "./AnnotatedCode";
 import PinnedChart from "./PinnedChart";
 import Scrollytell from "./Scrollytell";
+import ConceptNest from "./ConceptNest";
+import ReasoningLoop from "./ReasoningLoop";
 
 type ComponentsMap = NonNullable<MDXRemoteProps["components"]>;
 
@@ -50,6 +52,8 @@ export const mdxComponents: ComponentsMap = {
   AnnotatedCode,
   PinnedChart,
   Scrollytell,
+  ConceptNest,
+  ReasoningLoop,
   h1: ({ children, ...rest }) => <h1 className="insight-h1" {...rest}>{children}</h1>,
   h2: H2,
   h3: H3,

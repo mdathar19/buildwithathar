@@ -28,6 +28,22 @@ An agent removes the "turn ends." It takes your goal, looks at the current state
 
 This loop isn't new. It's the [ReAct paper](https://arxiv.org/abs/2210.03629) (Yao et al., October 2022) — "Reason + Act" — which showed that interleaving a reasoning trace with real tool calls beats a model that only thinks or only acts. Every framework you've heard of since is a wrapper around that one idea.
 
+Here's the loop, alive. The pulse laps the ring — observe, interpret, reason, act — powered by the model at the center, reaching out to tools to actually change the world. Watch the **reliability** readout: every completed lap is another 95%-reliable step stacked on the last, and the number falls off a cliff. That drop is the whole problem with "just let it run longer." Drag to spin it; tap any node to see its job.
+
+<ReasoningLoop
+  id="agent-loop"
+  stepReliability={0.95}
+  caption="Each lap = one step at 95% reliability. Watch the readout fall — that's compounding error, the real tax on autonomy."
+  stages={[
+    { key: "observe", label: "Observe", color: "#4dabf7", def: "Take in the current state of the world — the user's request, the last tool result, the environment. The loop always starts by looking." },
+    { key: "interpret", label: "Interpret", color: "#b197fc", def: "Make sense of what was just observed. What does it mean for the goal? Did the last action work or fail?" },
+    { key: "reason", label: "Reason / Plan", color: "#ffb454", def: "Decide the next move — which step, which tool, what arguments. This is where prompt engineering lives, and where the model can confidently pick wrong." },
+    { key: "act", label: "Act", color: "#51cf66", def: "Execute: call a tool, run code, send a message, write to a database. This is the only step that changes the world — and the only one that can hurt you." }
+  ]}
+  model={{ key: "model", label: "Model", color: "#ffd54f", def: "The brain. The LLM that powers every step of the loop — it observes, interprets, plans, and chooses the action. Same model, no loop, and you just have a chatbot." }}
+  tools={{ key: "tools", label: "Tools", color: "#ff8787", def: "The functions the agent can call to touch the world — APIs, code execution, databases, hardware. Tools are the blast radius: the agent is exactly as dangerous as the most destructive one you hand it." }}
+/>
+
 <FlipCard
   front="An AI agent"
   back="A language model in a while loop. It observes, reasons, picks a tool, runs it, looks at the result, and goes again — until it decides it's done. The 'autonomy' is just nobody ending the turn."

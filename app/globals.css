@@ -4012,6 +4012,339 @@ section { padding: 96px 0; position: relative; }
   text-align: center;
 }
 
+/* ConceptNest — 3D nested-shells diagram (three.js) */
+.insight-nest {
+  margin: 30px 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background:
+    radial-gradient(120% 90% at 22% 18%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
+    var(--bg-2);
+  overflow: hidden;
+}
+.insight-nest-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 0;
+}
+.insight-nest-stagewrap {
+  position: relative;
+  border-right: 1px solid var(--line);
+  min-height: 360px;
+}
+.insight-nest-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 360ms ease;
+}
+.insight-nest-stage[data-ready="true"] { opacity: 1; }
+.insight-nest-badge {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  pointer-events: none;
+  font-family: var(--mono);
+}
+.insight-nest-badge-key {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 18px currentColor;
+}
+.insight-nest-badge-hint {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  text-transform: uppercase;
+}
+.insight-nest-side {
+  padding: 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.insight-nest-eyebrow {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--mute-2);
+  text-transform: uppercase;
+}
+.insight-nest-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  counter-reset: none;
+}
+.insight-nest-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+.insight-nest-item:hover { background: color-mix(in srgb, var(--ink) 5%, transparent); color: var(--ink); }
+.insight-nest-item[data-active="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--ink);
+}
+.insight-nest-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+  box-shadow: 0 0 10px -1px currentColor;
+}
+.insight-nest-item-label { flex: 1; font-size: 14px; }
+.insight-nest-item-short {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--mute);
+  letter-spacing: 0.04em;
+}
+.insight-nest-def {
+  margin-top: 2px;
+  padding: 12px 14px;
+  border: 1px dashed var(--line-2);
+  border-radius: 7px;
+  background: var(--bg);
+}
+.insight-nest-def-head {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-bottom: 5px;
+}
+.insight-nest-def p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.insight-nest-cap {
+  padding: 10px 18px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--mute);
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 760px) {
+  .insight-nest-grid { grid-template-columns: 1fr; }
+  .insight-nest-stagewrap { border-right: none; border-bottom: 1px solid var(--line); min-height: 300px; }
+}
+
+/* ReasoningLoop — agent observe→reason→act orbit (three.js) */
+.insight-loop {
+  margin: 30px 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background:
+    radial-gradient(120% 90% at 78% 22%, color-mix(in srgb, var(--violet) 8%, transparent), transparent 60%),
+    var(--bg-2);
+  overflow: hidden;
+}
+.insight-loop-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 0;
+}
+.insight-loop-stagewrap {
+  position: relative;
+  border-right: 1px solid var(--line);
+  min-height: 380px;
+}
+.insight-loop-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 360ms ease;
+}
+.insight-loop-stage[data-ready="true"] { opacity: 1; }
+.insight-loop-readout {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(4px);
+  font-family: var(--mono);
+  min-width: 132px;
+}
+.insight-loop-readout-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+}
+.insight-loop-readout-k {
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.insight-loop-readout-v { font-size: 15px; font-weight: 700; color: var(--ink); }
+.insight-loop-readout-v[data-warn="true"] { color: var(--warn); }
+.insight-loop-readout-v[data-danger="true"] { color: var(--danger); text-shadow: 0 0 12px color-mix(in srgb, var(--danger) 50%, transparent); }
+.insight-loop-reset {
+  margin-top: 3px;
+  padding: 5px 8px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--mute);
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+.insight-loop-reset:hover { color: var(--accent); border-color: var(--accent-line); }
+.insight-loop-hint {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mute);
+  pointer-events: none;
+}
+.insight-loop-side {
+  padding: 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.insight-loop-eyebrow {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--mute-2);
+}
+.insight-loop-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.insight-loop-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+.insight-loop-item:hover { background: color-mix(in srgb, var(--ink) 5%, transparent); color: var(--ink); }
+.insight-loop-item[data-active="true"] {
+  background: color-mix(in srgb, var(--violet) 12%, transparent);
+  border-color: color-mix(in srgb, var(--violet) 40%, transparent);
+  color: var(--ink);
+}
+.insight-loop-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  box-shadow: 0 0 10px -1px currentColor;
+}
+.insight-loop-item-label { flex: 1; font-size: 14px; }
+.insight-loop-def {
+  padding: 12px 14px;
+  border: 1px dashed var(--line-2);
+  border-radius: 7px;
+  background: var(--bg);
+}
+.insight-loop-def-head {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-bottom: 5px;
+}
+.insight-loop-def p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.insight-loop-cap {
+  padding: 10px 18px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--mute);
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 760px) {
+  .insight-loop-grid { grid-template-columns: 1fr; }
+  .insight-loop-stagewrap { border-right: none; border-bottom: 1px solid var(--line); min-height: 320px; }
+}
+
+/* ----------------------------------------------------------------
+   Wide breakout for the 3D diagrams.
+   The prose column is 720px inside a centered 1100px layout
+   (220 sidebar + 60 gap + 56 padding => prose-left = 50vw - 214px
+   above 1100px, and a constant 336px in the 981–1100 band).
+   We center a capped-width figure on the VIEWPORT so it uses the
+   empty gutters on both sides — bigger and balanced, never full-bleed.
+   ---------------------------------------------------------------- */
+@media (min-width: 1101px) {
+  .insight-nest,
+  .insight-loop,
+  .insight-diff {
+    --bleed-w: min(1180px, calc(100vw - 96px));
+    position: relative;
+    z-index: 5;
+    width: var(--bleed-w);
+    margin-left: calc(214px - var(--bleed-w) / 2);
+  }
+  .insight-nest-grid,
+  .insight-loop-grid { grid-template-columns: minmax(0, 1fr) 340px; }
+  .insight-nest-stagewrap { min-height: 460px; }
+  .insight-loop-stagewrap { min-height: 480px; }
+}
+@media (min-width: 981px) and (max-width: 1100px) {
+  .insight-nest,
+  .insight-loop,
+  .insight-diff {
+    --bleed-w: min(1040px, calc(100vw - 64px));
+    position: relative;
+    z-index: 5;
+    width: var(--bleed-w);
+    margin-left: calc(50vw - var(--bleed-w) / 2 - 336px);
+  }
+  .insight-nest-stagewrap { min-height: 420px; }
+  .insight-loop-stagewrap { min-height: 440px; }
+}
+
 /* prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .insight-flipcard-inner,
@@ -4022,7 +4355,9 @@ section { padding: 96px 0; position: relative; }
   .insight-scrolly-step,
   .insight-chart-step,
   .insight-progress-bar,
-  .insight-support-glyph {
+  .insight-support-glyph,
+  .insight-nest-stage,
+  .insight-loop-stage {
     transition: none !important;
     animation: none !important;
   }
