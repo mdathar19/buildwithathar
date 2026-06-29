@@ -195,12 +195,18 @@ export default function PlatformStack({ id, caption, tiles, center }: Props) {
       let dragging = false;
       let moved = 0;
       let lastX = 0;
-      let velY = 0;
+      let lastY = 0;
+      let velYaw = 0; // inertia around Y (horizontal swing)
+      let velPitch = 0; // inertia around X (vertical tilt)
+      const PITCH_MIN = -1.45; // look almost straight down
+      const PITCH_MAX = 0.55; // tilt up past level
+      const clampPitch = (v: number) => Math.max(PITCH_MIN, Math.min(PITCH_MAX, v));
 
       const onDown = (e: PointerEvent) => {
         dragging = true;
         moved = 0;
         lastX = e.clientX;
+        lastY = e.clientY;
         renderer.domElement.setPointerCapture?.(e.pointerId);
       };
       const onMove = (e: PointerEvent) => {
@@ -215,10 +221,14 @@ export default function PlatformStack({ id, caption, tiles, center }: Props) {
           return;
         }
         const dx = e.clientX - lastX;
-        moved += Math.abs(dx);
+        const dy = e.clientY - lastY;
+        moved += Math.abs(dx) + Math.abs(dy);
         group.rotation.y += dx * 0.008;
-        velY = dx * 0.0008;
+        group.rotation.x = clampPitch(group.rotation.x + dy * 0.008);
+        velYaw = dx * 0.0008;
+        velPitch = dy * 0.0008;
         lastX = e.clientX;
+        lastY = e.clientY;
       };
       const onUp = (e: PointerEvent) => {
         renderer.domElement.releasePointerCapture?.(e.pointerId);
@@ -311,11 +321,13 @@ export default function PlatformStack({ id, caption, tiles, center }: Props) {
         (baseGrid.material as any).opacity = em * 0.5;
         (baseRing.material as any).opacity = em * 0.45;
 
-        // gentle auto-spin when assembled & idle
+        // gentle auto-spin when assembled & idle; carry drag inertia on both axes
         if (!dragging) {
           if (!reduced && unifiedRef.current) group.rotation.y += 0.0014;
-          group.rotation.y += velY;
-          velY *= 0.94;
+          group.rotation.y += velYaw;
+          group.rotation.x = clampPitch(group.rotation.x + velPitch);
+          velYaw *= 0.94;
+          velPitch *= 0.92;
         }
 
         renderer.render(scene, camera);
