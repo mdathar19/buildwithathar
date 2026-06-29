@@ -11,6 +11,7 @@ import Scrollytell from "./Scrollytell";
 import ConceptNest from "./ConceptNest";
 import ReasoningLoop from "./ReasoningLoop";
 import PlatformStack from "./PlatformStack";
+import AgentSwarm from "./AgentSwarm";
 
 type ComponentsMap = NonNullable<MDXRemoteProps["components"]>;
 
@@ -56,6 +57,7 @@ export const mdxComponents: ComponentsMap = {
   ConceptNest,
   ReasoningLoop,
   PlatformStack,
+  AgentSwarm,
   h1: ({ children, ...rest }) => <h1 className="insight-h1" {...rest}>{children}</h1>,
   h2: H2,
   h3: H3,

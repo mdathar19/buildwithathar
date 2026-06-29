@@ -1,0 +1,156 @@
+---
+title: "you type 'ultracode' and Claude stops working alone"
+summary: "Everyone thinks 'ultra' means Claude thinks harder. Wrong machine. ultracode is the setting where Claude quits being one brain and becomes an org chart — it writes a script, fans your task out to a swarm of agents, makes them fact-check each other, and hands you one answer. Here's what's actually happening behind the toggle."
+metaDescription: "What Claude Code's 'ultracode' setting actually does: it combines xhigh reasoning with automatic workflow orchestration, so Claude writes a JavaScript script that fans your task out to up to 16 parallel subagents (1,000 per run) and has them adversarially verify each other. How it differs from ultrathink, why Anthropic's own data shows multi-agent beating single-agent by 90.2% (at ~15x the tokens), and when it's overkill."
+publishedAt: "2026-06-29T15:00:00Z"
+readingMinutes: 7
+topic: gen-ai
+tags:
+  - claude-code
+  - ultracode
+  - multi-agent
+  - ai-agents
+  - gen-ai
+---
+
+Most people see "ultra" and assume it means Claude sits there and thinks _harder._ Cranks the reasoning, sweats over your problem longer, same one brain just more of it. That's the old thing. That was **ultrathink** — a bigger think budget for a single agent — and it's basically retired now that thinking is on by default.
+
+**ultracode is a different machine entirely.** Flip it on and Claude stops answering you like one person. It becomes the person who _runs a team._ It writes a little JavaScript program that spins up a swarm of sub-agents, fans your task out across all of them at once, makes them argue and fact-check each other, and then hands you the one answer that survived. You typed a sentence. Behind the curtain, an org chart spun up and shut down.
+
+This isn't a leak or a vibe. Anthropic shipped it [on May 28, 2026](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code) and [documented exactly what it does](https://code.claude.com/docs/en/workflows). So let's actually look at the machine.
+
+## 1. ultracode = xhigh brain + an orchestration script it writes itself
+
+Straight from the docs: ["Ultracode is a Claude Code setting that combines `xhigh` reasoning effort with automatic workflow orchestration. With it on, Claude plans a workflow for each substantive task instead of waiting for you to ask."](https://code.claude.com/docs/en/workflows)
+
+Translate that out of doc-speak: two things happen at once. The reasoning effort gets cranked to max (`xhigh`). And — this is the spicy part — Claude stops _doing_ your task and starts _delegating_ it. It writes ["a JavaScript script that orchestrates subagents at scale,"](https://code.claude.com/docs/en/workflows) then a runtime runs that script in the background while your chat stays responsive. You turn it on session-wide with `/effort ultracode`, or just drop the word `ultracode` into a single prompt when one task deserves the heavy machinery.
+
+The numbers on the swarm are real and capped: ["up to 16 concurrent agents"](https://code.claude.com/docs/en/workflows) running at once, ["1,000 agents total per run."](https://code.claude.com/docs/en/workflows) So one prompt from you can quietly become a hundred agents fanning out, working in parallel, and folding back into a single result you actually read.
+
+Here's the thing made physical. Toggle **solo** and you get what you're used to: one agent, one lane, doing the whole job in series. Toggle **ultracode** and the lead agent fans the task out — every lane lights up, packets streaming down all of them at once, then funneling into one synthesis node at the end. Drag it around. Tap a node to see what that agent is actually for.
+
+<AgentSwarm
+  id="ultracode-swarm"
+  caption="toggle solo ↔ ultracode. solo = one agent, one lane, in series. ultracode = the lead fans your task out to a swarm that runs at once and fact-checks itself, then funnels one answer back. drag to rotate, tap a node."
+  orchestrator={{ key: "lead", label: "Lead agent", short: "dispatch", color: "#5cf2a6", def: "The orchestrator. It doesn't do the grunt work — it splits your task into slices, writes the JavaScript that wires them together, and fans them out to up to 16 agents at once. Think tech lead, not the IC grinding tickets." }}
+  workers={[
+    { key: "scout", label: "Scout", short: "read", color: "#4dabf7", def: "Reads in parallel. Multiple agents skim different folders / files / sources at the same time and report back a map — so the rest of the swarm isn't working blind. Reading parallelizes beautifully, which is exactly why ultracode leans on it." },
+    { key: "finder-a", label: "Finder A", short: "hunt", color: "#74c0fc", def: "Hunts for issues one way — say, by data flow. Deliberately blind to what the others are finding. That's the point: independent hunters give you coverage instead of six agents all surfacing the same obvious bug." },
+    { key: "skeptic-a", label: "Skeptic A", short: "refute", color: "#ffb454", def: "Doesn't find — it tries to BREAK. Every claim a finder makes gets attacked by an independent agent whose whole job is to refute it. Plausible-but-wrong dies right here, before it ever reaches you." },
+    { key: "finder-b", label: "Finder B", short: "hunt", color: "#63e6be", def: "Hunts a different way — by entry point, by pattern, by blast radius. Diversity is the feature: each lens catches what the others structurally can't. This is the lane that stays lit in solo mode — your one normal agent." },
+    { key: "skeptic-b", label: "Skeptic B", short: "vote", color: "#ffd54f", def: "A second independent vote. One skeptic can be wrong; a panel that independently agrees is the self-consistency trick — sample several reasoning paths, keep the answer they converge on. Disagreement is the filter." },
+    { key: "critic", label: "Critic", short: "gaps", color: "#f783ac", def: "Asks the question everyone else forgets: what's MISSING? A folder nobody read, a claim nobody checked, an edge case nobody ran. Its answer becomes the next round of work, so the swarm doesn't quietly call it done too early." }
+  ]}
+  synthesis={{ key: "synth", label: "Synthesis", short: "merge", color: "#5cf2a6", def: "Where it all funnels back. The findings that survived the skeptics get merged into one coherent answer; the rejected ones get dropped. You never see the chaos in the middle — just the result that earned its way out." }}
+/>
+
+Look at the solo lane versus the swarm. Same prompt. One is a single agent doing its honest best on one pass. The other is a small organization that splits the work, runs it in parallel, and audits itself before it dares show you anything.
+
+<FlipCard
+  front="ultracode just makes Claude think harder, right?"
+  back="Nope — that was ultrathink (a bigger thinking budget for one agent, now basically retired since thinking is default-on). ultracode is orchestration: Claude writes a script that runs MANY agents in parallel and has them check each other. ultrathink = a bigger brain. ultracode = a bigger org chart."
+/>
+
+<TldrReveal label="TL;DR — section 1">
+  ultracode = `xhigh` reasoning + automatic workflow orchestration. Claude writes a JavaScript script that fans your task out to up to 16 agents at once (1,000 per run), runs it in the background, and hands you one synthesized answer. It's delegation, not just "harder thinking."
+</TldrReveal>
+
+## 2. the swarm's actual superpower isn't more agents — it's that they argue
+
+Here's the part people miss. Throwing more agents at a problem is not, by itself, magic. A hundred agents that all confidently agree on the same wrong thing is just one wrong answer with a bigger bill.
+
+What makes the swarm _trustworthy_ is that the agents are **adversarial.** The docs say it plainly: ultracode ["can have independent agents adversarially review each other's findings before they're reported, or draft a plan from several angles and weigh them against each other, so you get a more trustworthy result than a single pass."](https://code.claude.com/docs/en/workflows) Translation: a finding doesn't reach you because one agent believed it. It reaches you because it _survived_ a gauntlet of other agents trying to kill it.
+
+The difference between a solo prompt and an ultracode run, side by side — drag the handle. Left: you, normally. Right: the script Claude writes and runs for you.
+
+<DiffSlider
+  id="solo-vs-ultracode"
+  beforeLabel="solo · one agent, one pass"
+  afterLabel="ultracode · a script that fans out + verifies"
+  language="javascript"
+  before={`// you, normally: one prompt, one agent, one pass
+"audit every API route under src/routes for missing auth"
+
+// claude reads the routes... in order... by itself.
+// finds a few. maybe misses some. no second opinion.
+// as good as one model, on one try, on a good day.
+// did it actually check all 40 routes? you kinda
+// just... trust it. there's no one to disagree.`}
+  after={`// ultracode: claude WRITES this and runs it in the bg
+const routes = await scout("list every route in src/routes")
+
+// each route audited in parallel, THEN attacked
+const found = await pipeline(routes,
+  r => agent(\`audit \${r} for missing auth\`, { schema: BUGS }),
+  hits => parallel(hits.map(b =>            // adversarial pass
+    agent(\`try to REFUTE: \${b.title}\`, { schema: VERDICT })
+  ))
+)
+// only findings that survived the skeptics reach you
+return found.flat().filter(b => b.verdict.real)`}
+/>
+
+This isn't a Claude-marketing flourish — it's the same idea the research has been screaming for years. Anthropic's own [multi-agent research write-up](https://www.anthropic.com/engineering/multi-agent-research-system) reports that a multi-agent setup (Opus lead, Sonnet subagents) ["outperformed single-agent Claude Opus 4 by 90.2% on our internal research eval."](https://www.anthropic.com/engineering/multi-agent-research-system) And the "make them vote" instinct has a name in the literature — self-consistency — which lifted accuracy on a hard math benchmark by [+17.9%](https://arxiv.org/abs/2203.11171) just by sampling several reasoning paths and keeping the one they agree on. LLMs judging other LLMs' outputs, meanwhile, [agree with humans over 80% of the time](https://arxiv.org/abs/2306.05685) — about as much as humans agree with each other.
+
+<QuizCard
+  id="why-the-swarm-is-trustworthy"
+  question="ultracode spins up agents that don't just find problems — independent ones try to REFUTE each other's findings before anything reaches you. why does that produce a more trustworthy answer than one agent on one pass?"
+  options={[
+    { key: "a", label: "More agents = more compute = automatically more correct." },
+    { key: "b", label: "A plausible-but-wrong finding usually can't survive several independent skeptics each trying to break it — so the junk gets filtered out before you ever see it.", correct: true },
+    { key: "c", label: "The agents vote and the majority is always right." },
+    { key: "d", label: "Refuting is faster than finding, so it just saves time." }
+  ]}
+  explain="It's adversarial verification + self-consistency, not raw horsepower. One agent on one pass can be confidently, fluently wrong — and you'd never know. But a claim that survives several independent agents each trying to refute it is far more likely to be real, because plausible-but-false stuff tends to fall apart the moment someone independent pokes it. It's not 'more compute' (a) and it's not 'majority is always right' (c) — a panel can absolutely agree on something dumb; it just happens far less often than a single agent flubbing it. The filter is independent disagreement, and it's the same trick that lifted reasoning-benchmark accuracy in the research literature."
+/>
+
+<TldrReveal label="TL;DR — section 2">
+  The win isn't quantity, it's adversarial review: independent agents try to refute each other's findings, and only the survivors reach you. Anthropic's own eval shows multi-agent beating single-agent by 90.2%, and the "sample diverse paths, keep what they agree on" trick is a known accuracy booster. One confident agent can be wrong; a panel that independently agrees usually isn't.
+</TldrReveal>
+
+## 3. the catch: it's not free, and it's not always the move
+
+Time for the part the hype skips. A swarm that runs 16 agents and makes them re-audit each other does not bill like a chat message. Per Anthropic's own numbers, ["multi-agent systems use about 15× more tokens than chats"](https://www.anthropic.com/engineering/multi-agent-research-system) (a single agent already runs ~4×). ultracode is that trade-off welded to a toggle: you spend tokens to buy thoroughness and a second, third, fourth opinion.
+
+Drag this. It's the whole pitch and the whole catch in one slider.
+
+<ParamTinker
+  id="ultracode-token-bill"
+  label="a task that's worth about N normal chats of effort, run under ultracode, costs roughly…"
+  min={1}
+  max={20}
+  step={1}
+  initial={5}
+  unit="chats"
+  formula="v * 15"
+  template="A task worth ~{v} normal chats of work, run with ultracode, burns roughly {result} chats' worth of tokens — because multi-agent runs use about 15× the tokens of a chat. That's the deal: you're paying in tokens to buy parallel coverage and agents that fact-check each other."
+  hint="The 15× is Anthropic's own measured figure from their multi-agent research system (a single agent already runs ~4× a chat). And it's a trade, not a free lunch — Anthropic's docs themselves tell you to run a workflow on a small slice first and warn that a single run 'can use meaningfully more tokens.' Don't read 'cost doesn't matter' into ultracode; read 'sometimes the answer is worth 15× the tokens.'"
+/>
+
+And sometimes it just isn't worth it — which is the honest part nobody markets. The swarm wins hardest on **reading** problems: research, audits, "go find every X across this codebase." Reading parallelizes cleanly because two agents reading different files can't step on each other. **Writing** is where it gets dicey. Cognition (the Devin team) wrote a whole essay called [_Don't Build Multi-Agents_](https://cognition.com/blog/dont-build-multi-agents) arguing that parallel agents editing the same thing make ["conflicting assumptions"](https://cognition.com/blog/dont-build-multi-agents) and produce incoherent slop. LangChain split the difference with the cleanest rule of thumb: [reading tasks parallelize, writing tasks want shared context](https://www.langchain.com/blog/how-and-when-to-build-multi-agent-systems). Even Anthropic agrees on the boundary — they admit ["most coding tasks involve fewer truly parallelizable tasks than research"](https://www.anthropic.com/engineering/multi-agent-research-system) and still route the final synthesis through a single lead agent.
+
+So ultracode isn't "always on, always better." It's Anthropic betting that the _reading_ case — audit this, research that, find every instance of this across a big repo — is now common enough to be worth defaulting to a swarm for.
+
+<TldrReveal label="TL;DR — section 3">
+  The swarm costs ~15× the tokens of a chat — a trade, not free, and the docs literally tell you to test on a small slice first. It shines on read-heavy work (research, audits, find-every-X) where agents can't collide, and gets risky on write-heavy work where they make conflicting assumptions. ultracode is a bet that the parallelizable case is now common enough to default to.
+</TldrReveal>
+
+## so what actually happens when you type "ultracode"?
+
+In one breath: Claude cranks its reasoning to max, stops doing your task itself, writes a JavaScript program that splits the work across a swarm of up to 16 agents at once, has independent agents fact-check and refute each other's findings, drops everything that didn't survive, and hands you the one answer that earned its way out — all in the background, while your chat keeps moving.
+
+ultrathink gave you a bigger brain. ultracode gives you a bigger _org_ — one that argues with itself so you don't ship the first plausible answer. It costs more, it's not the move for every task, and on the right task it's the difference between "one smart guess" and "a team that audited its own work before showing up."
+
+<InlinePoll
+  slug="what-claude-does-when-you-enable-ultracode"
+  id="would-you-default-it"
+  question="be honest — would you flip ultracode on by default?"
+  options={[
+    { key: "always", label: "yes, max effort, burn the tokens, I want the swarm." },
+    { key: "reads", label: "only for read-heavy stuff — audits, research, find-every-X." },
+    { key: "manual", label: "case by case — I'll type 'ultracode' when a task earns it." },
+    { key: "never", label: "nah, one good agent is plenty for what I do." }
+  ]}
+/>
+
+What's the one thing you'd push back on?
